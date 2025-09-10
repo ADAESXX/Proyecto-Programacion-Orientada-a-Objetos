@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public class Propuesta {
@@ -8,9 +6,9 @@ public class Propuesta {
     private String descripcion;
     private Usuario creador;
     private float progreso; 
-    private final List<String> inversionistas = new ArrayList<>();
-    private final List<String> donantes = new ArrayList<>();
-    private final List<String> voluntarios = new ArrayList<>();
+    private final ArrayList<Inversionista> inversionistas = new ArrayList<>();
+    private final ArrayList<Donante> donantes = new ArrayList<>();
+    private final ArrayList<Voluntario> voluntarios = new ArrayList<>();
 
     public Propuesta(String titulo, String descripcion, Usuario creador) {
         setTitulo(titulo);
@@ -19,7 +17,7 @@ public class Propuesta {
         this.progreso = 0f;
     }
 
-    
+    //métodos
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = Objects.requireNonNull(titulo, "titulo"); }
 
@@ -35,25 +33,16 @@ public class Propuesta {
         this.progreso = progreso;
     }
 
-    public List<String> getInversionistas() { return Collections.unmodifiableList(inversionistas); }
-    public void setInversionistas(List<String> lista) { reiniciar(inversionistas, lista); }
+    public ArrayList<Inversionista> getInversionistas() { return inversionistas; }
+    public void setInversionistas(Inversionista inver) {inversionistas.add(inver); }
 
-    public List<String> getDonantes() { return Collections.unmodifiableList(donantes); }
-    public void setDonantes(List<String> lista) { reiniciar(donantes, lista); }
+    public ArrayList<Donante> getDonantes() { return donantes; }
+    public void setDonantes(Donante donan) { donantes.add(donan); }
 
-    public List<String> getVoluntarios() { return Collections.unmodifiableList(voluntarios); }
-    public void setVoluntarios(List<String> lista) { reiniciar(voluntarios, lista); }
+    public ArrayList<Voluntario> getVoluntarios() { return voluntarios; }
+    public void setVoluntarios(Voluntario volun) { voluntarios.add(volun); }
 
-    // Helpers para registrar apoyos
-    public void registrarInversionista(String nombre) { if (!nombre.isBlank()) inversionistas.add(nombre); }
-    public void registrarDonante(String nombre) { if (!nombre.isBlank()) donantes.add(nombre); }
-    public void registrarVoluntario(String nombre) { if (!nombre.isBlank()) voluntarios.add(nombre); }
-
-    private static void reiniciar(List<String> destino, List<String> origen) {
-        destino.clear();
-        if (origen != null) destino.addAll(origen);
-    }
-
-    @Override public String toString() {
+    public String toString() {
         return "Propuesta{" + "titulo='" + titulo + '\'' + ", progreso=" + progreso + "%, creador=" + creador.getCorreo() + '}';
     }
+}
