@@ -11,6 +11,6 @@ public class Voluntario extends Usuario {
     }
 
     public void setApoyos(String apoyo){
-
+        
     }
 }
