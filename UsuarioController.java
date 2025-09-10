@@ -1,5 +1,5 @@
-//clase revisada
-//falta ver funcionalidades extras, como validaciones entre otras cosas
+//clase revisada - validacion completa
+//falta ver funcionalidades extras
 //falta comunicacion entre clases
 import java.util.*;
 
@@ -34,7 +34,15 @@ public class UsuarioController {
     public boolean editarPerfiles(String correo, String nuevoNombre, String nuevaUbicacion, String nuevaContrasena, String nuevoCorreo) {
         Usuario u = usuarios.get(correo);
         if (u == null) return false;
+        if (!correo.equals(nuevoCorreo) && usuarios.containsKey(nuevoCorreo)){
+             return false;
+        }
         u.actualizarPerfil(nuevoNombre, nuevaUbicacion, nuevaContrasena, nuevoCorreo);
+        //validacion por si cambia el correo, se actualixe la clave del mapa
+        if (!correo.equals(nuevoCorreo)) {
+            usuarios.remove(correo);
+            usuarios.put(nuevoCorreo, u);
+        }
         return true;
     }
 

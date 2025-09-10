@@ -1,5 +1,5 @@
-//clase revisada
-//faltan validaciones y revisar funciones extras y comunicaicon entre clases
+//clase revisada - validaciones completadas
+//faltan revisar funciones extras y comunicaicon entre clases
 import java.util.*;
 public class Inversionista extends Usuario {
     
@@ -17,12 +17,16 @@ public class Inversionista extends Usuario {
 
     // Método para registrar una nueva inversión en la lista
     public void setInvertir(String inversion) {
-        this.inversiones.add(inversion);
+        if (inversion == null || inversion.isBlank()){ 
+            throw new IllegalArgumentException("La inversión es inválida");
+        }
+        this.inversiones.add(inversion.trim());
     }
 
     // Otro getter que devuelve la lista de inversiones (funciona igual que getInversiones)
     public ArrayList<String> getInvertir() { 
         return inversiones; 
     }
+
 }
 

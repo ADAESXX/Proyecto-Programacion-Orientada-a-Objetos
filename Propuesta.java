@@ -1,5 +1,5 @@
-//clase revisada
-//faltan validaciones y revisar funciones extras y comunicacion entre clases
+//clase revisada - validaciones completas
+//faltan revisar funciones extras y comunicacion entre clases
 import java.util.ArrayList;
 
 public class Propuesta {
@@ -12,35 +12,68 @@ public class Propuesta {
     private final ArrayList<Voluntario> voluntarios = new ArrayList<>();
 
     public Propuesta(String titulo, String descripcion, Usuario creador) {
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.creador = creador;
+        setTitulo(titulo);
+        setDescripcion(descripcion);
+        setCreador(creador);
         this.progreso = 0f;
     }
 
     //métodos
     public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo =titulo; }
+    public void setTitulo(String titulo) { 
+        if (titulo == null || titulo.isBlank()){ 
+                throw new IllegalArgumentException("Título vacío o nulo, por lo que es inválido");
+        }
+        this.titulo =titulo; 
+    }
 
     public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public void setDescripcion(String descripcion) { 
+        if (descripcion == null || descripcion.isBlank()){ 
+                throw new IllegalArgumentException("Descripción vacía o nula, por lo que inválido");
+        }
+        this.descripcion = descripcion; 
+    }
 
     public Usuario getCreador() { return creador; }
-    public void setCreador(Usuario creador) { this.creador = creador; }
+    public void setCreador(Usuario creador) { 
+        if (creador == null){ 
+                throw new IllegalArgumentException("No existe el creador");
+        }
+        this.creador = creador; 
+    }
 
     public float getProgreso() { return progreso; }
     public void setProgreso(float progreso) {
+        if (progreso<0 || progreso >100){
+            throw new IllegalArgumentException("El progreso debe de estar entre 0 y 100");
+        }
         this.progreso = progreso;
     }
 
     public ArrayList<Inversionista> getInversionistas() { return inversionistas; }
-    public void setInversionistas(Inversionista inver) {inversionistas.add(inver); }
+    public void setInversionistas(Inversionista inver) {
+        if (inver == null ){ 
+                throw new IllegalArgumentException("Inversionista inválido");
+        }
+        inversionistas.add(inver); 
+    }
 
     public ArrayList<Donante> getDonantes() { return donantes; }
-    public void setDonantes(Donante donan) { donantes.add(donan); }
+    public void setDonantes(Donante donan) { 
+        if (donan == null ){ 
+                throw new IllegalArgumentException("Donante inválido");
+        }
+        donantes.add(donan); 
+    }
 
     public ArrayList<Voluntario> getVoluntarios() { return voluntarios; }
-    public void setVoluntarios(Voluntario volun) { voluntarios.add(volun); }
+    public void setVoluntarios(Voluntario volun) { 
+        if (volun == null ){ 
+                throw new IllegalArgumentException("Voluntario inválido");
+        }
+        voluntarios.add(volun); 
+    }
 
     public String toString() {
         return "Propuesta{" + "titulo='" + titulo + '\'' + ", progreso=" + progreso + "%, creador=" + creador.getCorreo() + '}';

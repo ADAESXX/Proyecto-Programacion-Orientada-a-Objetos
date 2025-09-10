@@ -1,3 +1,6 @@
+//clae revisada - validaciones completas
+//faltan revisar funciones extras y comunicaicon entre clases
+
 import java.util.*;
 
 //crea la clase de Donante
@@ -13,8 +16,11 @@ class Donante extends Usuario {
         return donaciones;
     }
 //se agrega las donaciones en la lista
-    public void setDonaciones(String donacion) {
-        this.donaciones.add(donacion);
+    public void setDonaciones(String donacion){ 
+        if (donacion == null || donacion.isBlank()){ 
+                throw new IllegalArgumentException("Donació inválida");
+        }
+        this.donaciones.add(donacion.trim());
     }
 }
 //quite getDonacioneRealizadas, ya que es lo mismo que hace getDonaciones, y seria tonto dejarlo

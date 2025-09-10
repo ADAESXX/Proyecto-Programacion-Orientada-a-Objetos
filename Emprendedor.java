@@ -1,5 +1,5 @@
-//clase revisada
-//faltan validaciones, revisar comunicacion entre clases y revisar funciones extras
+//clase revisada - validaciones completas
+//faltan revisar comunicacion entre clases y revisar funciones extras
 import java.util.*;
 //hereda método y atributos de la clase Uusuario
 class Emprendedor extends Usuario {
@@ -16,7 +16,7 @@ class Emprendedor extends Usuario {
         super(nombre, correo, contrasena, ubicacion);
         
         // Inicializa el nombre principal del proyecto
-        this.nombreProyecto = nombreProyecto;
+        setNombreProyecto(nombreProyecto);
         
         // Inicializa la lista de proyectos vacía
         this.proyectos = new ArrayList<>();
@@ -29,7 +29,10 @@ class Emprendedor extends Usuario {
 
     // Setter para modificar el nombre principal del proyecto
     public void setNombreProyecto(String nombreProyecto) { 
-        this.nombreProyecto = nombreProyecto; 
+        if (nombreProyecto == null || nombreProyecto.isBlank()){ 
+            throw new IllegalArgumentException("El nombre del proyecto no puede estar vacío");
+        }
+        this.nombreProyecto = nombreProyecto.trim(); 
     }
 
     // Getter para obtener la lista completa de proyectos
@@ -38,12 +41,18 @@ class Emprendedor extends Usuario {
     }
 
     // Setter para modificar la lista de proyectos (reemplazarla por otra lista)
-    public void setProyectos(ArrayList<String> proyectos) { 
+    public void setProyectos(ArrayList<String> proyectos) {
+        if (proyectos == null){ 
+            throw new IllegalArgumentException("La lista de proyectos no puede estar vacía");
+        } 
         this.proyectos = proyectos; 
     }
 
     // Método para agregar un nuevo proyecto a la lista
     public void agregarProyectos(String proyecto) {
+        if (proyecto == null || proyecto.isBlank()){ 
+            throw new IllegalArgumentException("El proyecto no puede ser vacío o nulo");
+        }
         this.proyectos.add(proyecto);
     }
 }

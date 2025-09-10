@@ -1,4 +1,5 @@
 //falta clase
+
 //el extends sirve para heredar atributos y métodos de otras clases
 import java.util.ArrayList;
 
@@ -11,6 +12,6 @@ public class Voluntario extends Usuario {
     }
 
     public void setApoyos(String apoyo){
-        
+
     }
 }

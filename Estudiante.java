@@ -1,5 +1,5 @@
-//clase revisada
-//falta ver validaciones y comunicacion entre clases
+//clase revisada - validaciones completas
+//falta comunicacion entre clases
 import java.util.*;
 //el extends permite que se hereden atributos y/o métodos de la clase Uusuario
 public class Estudiante extends Usuario {
@@ -14,17 +14,28 @@ public class Estudiante extends Usuario {
 
     // Acciones clave
     public void agregarPropuesta(String titulo) {
-        if (titulo == null || titulo.isBlank()) throw new IllegalArgumentException("título vacío");
-        propuestas.add(titulo);
+        if (titulo == null || titulo.isBlank()) {
+            throw new IllegalArgumentException("título vacío, por lo que es inválido");
+        }
+        //el trim quita los espacios en blanco
+        propuestas.add(titulo.trim());
     }
 
     // Getters/Setters
     public String getCarrera() { return carrera; }
-    public void setCarrera(String carrera) { this.carrera = carrera; }
+    public void setCarrera(String carrera) { 
+        if (carrera == null || carrera.isBlank()) {
+            throw new IllegalArgumentException("Carrera vacía, por lo que es inválido");
+        }
+        this.carrera = carrera; 
+    }
 
     // Compatibles con “setPropuestas / getPropuestas” de la fase
     public ArrayList<String> getPropuestas() { return propuestas; }
     public void setPropuestas(ArrayList<String> nuevas) {
+        if (nuevas == null) {
+            throw new IllegalArgumentException("La lista propuesta no puede ser nula");
+        }
         propuestas.clear();
         propuestas.addAll(nuevas);
     }
