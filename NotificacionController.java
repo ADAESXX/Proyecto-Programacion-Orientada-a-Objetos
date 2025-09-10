@@ -1,23 +1,23 @@
 // se importa el java list y array
 import java.util.ArrayList;
-import java.util.List;
+
 public class NotificacionController {
-    private List<Notificacion> notificaciones;
+    private ArrayList<Notificaciones> notificaciones;
 //las notificaciones se agregan a una lista 
     public NotificacionController() {
         this.notificaciones = new ArrayList<>();
     }
     //se agrega la noficiacon del receptor y el mensaje 
-    public void generarNotificacion(Usuario receptor, String mensaje) {
-        Notificacion n = new Notificacion(receptor, mensaje);
+    public String generarNotificacion(Usuario receptor, String mensaje) {
+        Notificaciones n = new Notificaciones(receptor, mensaje);
         notificaciones.add(n);
-        System.out.println(" Notificación creada para " 
-                           + receptor.getNombre() + ": " + mensaje);
+        String cadena=" Notificación creada para " + receptor.getNombre() + ": " + mensaje;
+        return cadena;
     }
     //se agrega en una lista para obtener las notificacion del receptor
-    public List<Notificacion> obtenerNotificaciones(Usuario receptor) {
-        List<Notificacion> lista = new ArrayList<>();
-        for (Notificacion n : notificaciones) {
+    public ArrayList<Notificaciones> obtenerNotificaciones(Usuario receptor) {
+        ArrayList<Notificaciones> lista = new ArrayList<>();
+        for (Notificaciones n : notificaciones) {
             if (n.getReceptorN().equals(receptor)) {
                 lista.add(n);
             }

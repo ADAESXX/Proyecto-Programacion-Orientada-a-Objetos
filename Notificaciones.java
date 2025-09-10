@@ -15,11 +15,10 @@ public class Notificaciones {
     public String getMensaje() { return mensaje; }
     public void setMensaje(String mensaje) { this.mensaje = mensaje; }
     public boolean isLeido() { return leido; }
-    public void marcarLeido() {
-        this.leido = true;
+    public void marcarLeido(boolean newestado) {
+        this.leido = newestado;
     }
     //muestra como es el mensaje , por el nombre del receptor, mas tambien lo que contiene el mensaje y si a sido leido 
-    @Override
     public String toString() {
         return "De: " + receptorN.getNombre() + " | Mensaje: " + mensaje + " | Leído: " + leido;
     }
