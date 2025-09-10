@@ -1,6 +1,5 @@
 //clase revisada - validaciones completas
-//falta ver funcionalidades extras
-//falta comunicacion entre clases
+
 public class Mensaje {
     
     // Usuario que envía el mensaje

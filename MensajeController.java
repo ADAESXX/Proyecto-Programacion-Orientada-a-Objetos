@@ -1,6 +1,5 @@
 //clase revisada - validaciones completas
-//falta ver funcionalidades extras
-//falta comunicacion entre clases
+
 import java.util.ArrayList;
 
 public class MensajeController {

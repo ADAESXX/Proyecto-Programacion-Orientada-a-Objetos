@@ -1,5 +1,4 @@
 //clase revisada - validaciones completas
-//falta comunicacion entre clases
 import java.util.*;
 //el extends permite que se hereden atributos y/o métodos de la clase Uusuario
 public class Estudiante extends Usuario {

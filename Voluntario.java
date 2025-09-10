@@ -1,4 +1,4 @@
-//falta clase
+//clase revisada- validaciones completas
 
 //el extends sirve para heredar atributos y métodos de otras clases
 import java.util.ArrayList;
@@ -17,14 +17,20 @@ class Voluntario extends Usuario {
 
 //la lista de las Habililidades
     public void setHabilidades(String habilidades) {
+        if (habilidades == null || habilidades.isBlank()){ 
+                throw new IllegalArgumentException("No ingreso una habilidad válida");
+        }
         this.habilidades.add(habilidades);
     }
 //
     public ArrayList<String> getApoyos() { return apoyos; }
 
     public void setApoyos(String apoyo) {
+        if (apoyo == null || apoyo.isBlank()){ 
+                throw new IllegalArgumentException("No existe el emisor");
+        }
         //valida que no se duplique el apoyo
-        if (!this.apoyos.contains(apoyo)) {
+        if (!this.apoyos.contains(apoyo)){
             this.apoyos.add(apoyo);
         }
     }

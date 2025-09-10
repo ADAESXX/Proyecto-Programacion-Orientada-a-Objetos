@@ -1,5 +1,5 @@
 //clase revisada - validaciones completas
-//faltan revisar funciones extras y comunicacion entre clases
+
 import java.util.ArrayList;
 
 public class Propuesta {

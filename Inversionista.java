@@ -1,5 +1,5 @@
 //clase revisada - validaciones completadas
-//faltan revisar funciones extras y comunicaicon entre clases
+
 import java.util.*;
 public class Inversionista extends Usuario {
     

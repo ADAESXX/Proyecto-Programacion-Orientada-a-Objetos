@@ -1,4 +1,4 @@
-//crea la clase de notificaciones 
+//clase revisada - validaciones completas
 public class Notificaciones {
     private Usuario receptorN;
     private String mensaje;
@@ -11,9 +11,19 @@ public class Notificaciones {
     }
     //crea las cualidades de las notificaciones, dandole que el mensaje sea leido o caido
     public Usuario getReceptorN() { return receptorN; }
-    public void setReceptorN(Usuario receptorN) { this.receptorN = receptorN; }
+    public void setReceptorN(Usuario receptorN) { 
+        if (receptorN == null ){ 
+                throw new IllegalArgumentException("No existe un receptor");
+        }
+        this.receptorN = receptorN; 
+    }
     public String getMensaje() { return mensaje; }
-    public void setMensaje(String mensaje) { this.mensaje = mensaje; }
+    public void setMensaje(String mensaje) { 
+        if (mensaje == null || mensaje.isBlank()){ 
+                throw new IllegalArgumentException("Mensaje inválido");
+        }
+        this.mensaje = mensaje; 
+    }
     public boolean isLeido() { return leido; }
     public void marcarLeido(boolean newestado) {
         this.leido = newestado;

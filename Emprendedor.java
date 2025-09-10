@@ -1,5 +1,5 @@
 //clase revisada - validaciones completas
-//faltan revisar comunicacion entre clases y revisar funciones extras
+
 import java.util.*;
 //hereda método y atributos de la clase Uusuario
 class Emprendedor extends Usuario {

@@ -1,5 +1,4 @@
 //clase revisada - validaciones completadas
-//falta ver funcionalidades extras - falta comunicacion entre clases
 public class Usuario {
     private String nombre;
     private String correo;

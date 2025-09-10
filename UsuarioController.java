@@ -1,6 +1,5 @@
 //clase revisada - validacion completa
-//falta ver funcionalidades extras
-//falta comunicacion entre clases
+
 import java.util.*;
 
 public class UsuarioController {

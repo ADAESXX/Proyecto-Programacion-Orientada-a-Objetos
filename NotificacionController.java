@@ -1,3 +1,5 @@
+//clase completa - validaciones completas
+
 // se importa el java list y array
 import java.util.ArrayList;
 
@@ -9,6 +11,12 @@ public class NotificacionController {
     }
     //se agrega la noficiacon del receptor y el mensaje 
     public String generarNotificacion(Usuario receptor, String mensaje) {
+        if (receptor == null) {
+            throw new IllegalArgumentException("Receptor no existente");
+        }
+        if (mensaje == null || mensaje.isBlank()) {
+            throw new IllegalArgumentException("Mensaje inválido¿");
+        }
         Notificaciones n = new Notificaciones(receptor, mensaje);
         notificaciones.add(n);
         String cadena=" Notificación creada para " + receptor.getNombre() + ": " + mensaje;
@@ -16,6 +24,10 @@ public class NotificacionController {
     }
     //se agrega en una lista para obtener las notificacion del receptor
     public ArrayList<Notificaciones> obtenerNotificaciones(Usuario receptor) {
+        if (receptor == null) {
+            throw new IllegalArgumentException("Receptor inválido");
+        }
+
         ArrayList<Notificaciones> lista = new ArrayList<>();
         for (Notificaciones n : notificaciones) {
             if (n.getReceptorN().equals(receptor)) {
@@ -23,6 +35,17 @@ public class NotificacionController {
             }
         }
         return lista; 
+    }
+    public void marcarTodasLeidas(Usuario receptor) {
+        if (receptor == null) {
+            throw new IllegalArgumentException("Usuario receptor inválido");
+        }
+
+        for (Notificaciones n : notificaciones) {
+            if (n.getReceptorN().getCorreo().equals(receptor.getCorreo())) {
+                n.marcarLeido(true);
+            }
+        }
     }
 }
 // se obtiene las notificaciones de el usuario por medio de una list 

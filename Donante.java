@@ -1,5 +1,4 @@
 //clae revisada - validaciones completas
-//faltan revisar funciones extras y comunicaicon entre clases
 
 import java.util.*;
 
