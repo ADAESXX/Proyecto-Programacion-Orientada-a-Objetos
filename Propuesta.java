@@ -1,5 +1,6 @@
+//clase revisada
+//faltan validaciones y revisar funciones extras y comunicacion entre clases
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Propuesta {
     private String titulo;
@@ -11,25 +12,24 @@ public class Propuesta {
     private final ArrayList<Voluntario> voluntarios = new ArrayList<>();
 
     public Propuesta(String titulo, String descripcion, Usuario creador) {
-        setTitulo(titulo);
-        setDescripcion(descripcion);
-        setCreador(creador);
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.creador = creador;
         this.progreso = 0f;
     }
 
     //métodos
     public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = Objects.requireNonNull(titulo, "titulo"); }
+    public void setTitulo(String titulo) { this.titulo =titulo; }
 
     public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = Objects.requireNonNull(descripcion, "descripcion"); }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
     public Usuario getCreador() { return creador; }
-    public void setCreador(Usuario creador) { this.creador = Objects.requireNonNull(creador, "creador"); }
+    public void setCreador(Usuario creador) { this.creador = creador; }
 
     public float getProgreso() { return progreso; }
     public void setProgreso(float progreso) {
-        if (progreso < 0 || progreso > 100) throw new IllegalArgumentException("progreso 0..100");
         this.progreso = progreso;
     }
 

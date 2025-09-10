@@ -1,5 +1,7 @@
-import java.util.objects;
-
+//clase revisada
+//se elimino algunas cosas de los métodos que hacían lo que debe de hacer el controllers
+//falta ver funcionalidades extras, como validaciones entre otras cosas
+//falta comunicacion entre clases
 public class Usuario {
     private String nombre;
     private String correo;
@@ -7,11 +9,14 @@ public class Usuario {
     private String ubicacion;
     private boolean verificado;
 
+    public Usuario(){
+
+    }
     public Usuario (String nombre, String correo, String contrasena, String ubicacion) {
-        setNombre(nombre);
-        setCorreo(correo);
-        setContrasena(contrasena);
-        setUbicacion(ubicacion);
+        this.nombre = nombre;
+        this.correo = correo;
+        this.contrasena = contrasena;
+        this.ubicacion = ubicacion;
         this.verificado = false;
     }
 
@@ -19,29 +24,28 @@ public class Usuario {
         this.verificado = true;
     }
 
-    public void ActualizarPerfil (String nuevoNombre, String nuevaUbicacion, String nuevaContrasena) {
-        if (nuevoNombre != null && !nuevoNombre.isBlanck()) this.nombre = nuevoNombre;
-        if (nuevaUbicacion != null && !nuevaUbicacion.isBlanck()) this.ubicacion = nuevaUbicacion;
-        if (nuevaContrasena != null && !nuevaContrasena.isBlanck()) this.contrasena = nuevaContrasena;
+    public void actualizarPerfil (String nuevoNombre, String nuevaUbicacion, String nuevaContrasena, String nuevoCorreo) {
+        this.nombre = nuevoNombre;
+        this.ubicacion = nuevaUbicacion;
+        this.contrasena = nuevaContrasena;
+        this.correo=nuevoCorreo;
     }
 
     public String getNombre() { return nombre; }
-    public void setNombre(String nombre) {this.nombre = Objects.requireNonNull(nombre, "nombre"); }
+    public void setNombre(String nombre) {this.nombre =nombre; }
 
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) {
-        if (correo = null || !correo.contains("@") throw new IllegalArgumentException("Correo invalido");
         this.correo = correo;
     }
 
-    public String getCotrasena() { return contrasena; }
+    public String getContrasena() { return contrasena; }
     public void setContrasena(String contrasena) {
-        if (contrasena == null || contrasena.lenght() < 4) throw new IllegalArgumentException("contraseña débil")
             this.contrasena = contrasena;
     }
 
     public String getUbicacion() { return ubicacion; }
-    public void setUbicacion(String ubicacion) { this.ubicacion = (ubicacion == null ? "" : ubicacion); }
+    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
 
     public boolean getVerificado() { return verificado; }
     public void setVerificado(boolean verificado) { this. verificado = verificado; }
@@ -51,12 +55,4 @@ public class Usuario {
                ", ubicacion='" + ubicacion + '\'' + ", verificado=" + verificado + '}';
     }
 
-    public boolean equals (object o) {
-        if (this == o) return true
-            if (!(o instanceof Usuario)) return false
-            Usuario u = (Usuario) o;
-        return Objects.equals(correo, u.correo);
-    }
-
-    public int hashCode() { return Objects.hash(correo); }
 }

@@ -1,10 +1,14 @@
+//clase revisada
+//faltan validaciones, revisar comunicacion entre clases y revisar funciones extras
+import java.util.*;
+//hereda método y atributos de la clase Uusuario
 class Emprendedor extends Usuario {
     
     // Atributo para guardar el nombre principal del proyecto del emprendedor
     private String nombreProyecto;
     
     // Lista que contendrá todos los proyectos que el emprendedor vaya agregando
-    private List<String> proyectos;
+    private ArrayList<String> proyectos;
 
     // Constructor que recibe los datos del usuario y el nombre de su proyecto principal
     public Emprendedor(String nombre, String correo, String contrasena, String ubicacion, String nombreProyecto) {
@@ -29,12 +33,12 @@ class Emprendedor extends Usuario {
     }
 
     // Getter para obtener la lista completa de proyectos
-    public List<String> getProyectos() { 
+    public ArrayList<String> getProyectos() { 
         return proyectos; 
     }
 
     // Setter para modificar la lista de proyectos (reemplazarla por otra lista)
-    public void setProyectos(List<String> proyectos) { 
+    public void setProyectos(ArrayList<String> proyectos) { 
         this.proyectos = proyectos; 
     }
 

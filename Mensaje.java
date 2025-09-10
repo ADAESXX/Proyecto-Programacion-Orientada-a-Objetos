@@ -1,4 +1,7 @@
-class Mensaje {
+//clase revisada
+//falta ver funcionalidades extras, como validaciones entre otras cosas
+//falta comunicacion entre clases
+public class Mensaje {
     
     // Usuario que envía el mensaje
     private Usuario emisor;
@@ -29,12 +32,12 @@ class Mensaje {
     public void setContenido(String contenido) { this.contenido = contenido; }
 
     // Método que simula el envío del mensaje mostrando un texto en consola
-    public void enviar() {
-        System.out.println(
+    public String enviar() {
+        String cadena=
             "Mensaje enviado de " + emisor.getNombre() + 
             " a " + receptor.getNombre() + 
-            ": " + contenido
-        );
+            ": " + contenido;
+        return cadena;
     }
 }
 

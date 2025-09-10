@@ -1,22 +1,27 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+//clase revisada
+//falta ver funcionalidades extras, como validaciones entre otras cosas
+//falta comunicacion entre clases
+import java.util.*;
 
 public class UsuarioController {
 
     // “Persistencia” en memoria por ahora (clave = correo)
-    private final Map<String, Usuario> usuarios = new HashMap<>();
+    private Map<String, Usuario> usuarios;
+
+    public UsuarioController(){
+        usuarios=new HashMap<>();
+    }
 
     /** registraUsuario: registra un nuevo usuario */
     public boolean registraUsuario(Usuario u) {
         if (u == null) return false;
         if (usuarios.containsKey(u.getCorreo())) return false;
-        // TODO: en Fase 3, guardar contraseña como hash y escribir en BD
+        // guardar contraseña como hash y escribir en BD
         usuarios.put(u.getCorreo(), u);
         return true;
     }
 
-    /** iniciarSecion (sic en el documento): autenticación simple */
+    // iniciarSecion (sic en el documento): autenticación simple
     public Optional<Usuario> iniciarSesion(String correo, String contrasena) {
         Usuario u = usuarios.get(correo);
         if (u != null && u.getContrasena().equals(contrasena)) { // TODO: verificar hash
@@ -26,10 +31,10 @@ public class UsuarioController {
     }
 
     /** editarPerfiles: edita perfil del usuario identificado por correo */
-    public boolean editarPerfiles(String correo, String nuevoNombre, String nuevaUbicacion, String nuevaContrasena) {
+    public boolean editarPerfiles(String correo, String nuevoNombre, String nuevaUbicacion, String nuevaContrasena, String nuevoCorreo) {
         Usuario u = usuarios.get(correo);
         if (u == null) return false;
-        u.actualizarPerfil(nuevoNombre, nuevaUbicacion, nuevaContrasena);
+        u.actualizarPerfil(nuevoNombre, nuevaUbicacion, nuevaContrasena, nuevoCorreo);
         return true;
     }
 
@@ -43,3 +48,4 @@ public class UsuarioController {
 
     // Auxiliar para pruebas
     public Map<String, Usuario> getUsuarios() { return usuarios; }
+}

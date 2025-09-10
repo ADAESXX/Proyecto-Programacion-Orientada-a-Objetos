@@ -1,3 +1,6 @@
+//clase revisada
+//falta ver funcionalidades extras, como validaciones entre otras cosas
+//falta comunicacion entre clases
 import java.util.*;
 public class PropuestaController {
 
