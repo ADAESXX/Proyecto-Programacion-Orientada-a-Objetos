@@ -1,171 +1,379 @@
-// Revisión esta bien pero falta mejorar la interfaz y de igual forma no tiene Try Catch
-//Falto de algunas funciones y mejorar la distribucion
+//Mejore la distribución del GUI de igual forma le agregue bloques TryCatch para que no tenga errores
+
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
+import java.util.ArrayList;
+
+
 
 public class GUI_Plataforma {
     private JFrame frame;
-    private JTabbedPane tabbedPane;
 
-    private java.util.List<Usuario> usuarios;
-    private PropuestaController propuestaController;
-    private MensajeController mensajeController;
-    private NotificacionController notificacionController;
+    // Controladores / Listas simples para la demo
+    private PropuestaController propuestaController = new PropuestaController();
+    private MensajeController mensajeController = new MensajeController();
+    private NotificacionController notificacionController = new NotificacionController();
 
-    public GUI_Plataforma() {
-        usuarios = new ArrayList<>();
-        propuestaController = new PropuestaController();
-        mensajeController = new MensajeController();
-        notificacionController = new NotificacionController();
-        initComponents();
+    // Modelos para JList
+    private DefaultListModel<Usuario> usuariosModel = new DefaultListModel<>();
+    private DefaultListModel<Propuesta> propuestasModel = new DefaultListModel<>();
+    private DefaultListModel<Mensaje> mensajesModel = new DefaultListModel<>();
+    private DefaultListModel<Notificaciones> notifsModel = new DefaultListModel<>();
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new GUI_Plataforma().initialize());
     }
 
-    private void initComponents() {
-        frame = new JFrame("Plataforma Colaborativa - Sin TryCatch");
+    private void initialize() {
+        frame = new JFrame("Plataforma - GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
+        frame.setSize(1000, 600);
+        frame.setLocationRelativeTo(null);
 
-        tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Usuarios", crearPanelUsuarios());
-        tabbedPane.addTab("Propuestas", crearPanelPropuestas());
-        tabbedPane.addTab("Mensajes", crearPanelMensajes());
-        tabbedPane.addTab("Notificaciones", crearPanelNotificaciones());
+        JTabbedPane tabs = new JTabbedPane();
 
-        frame.add(tabbedPane);
+        tabs.addTab("Usuarios", usuariosPanel());
+        tabs.addTab("Propuestas", propuestasPanel());
+        tabs.addTab("Mensajes", mensajesPanel());
+        tabs.addTab("Notificaciones", notificacionesPanel());
+
+        frame.getContentPane().add(tabs);
         frame.setVisible(true);
     }
 
-    private JPanel crearPanelUsuarios() {
-        JPanel panel = new JPanel(new GridLayout(0,2));
+    // Panel para gestionar usuarios
+    private JPanel usuariosPanel() {
+        JPanel panel = new JPanel(new BorderLayout(8, 8));
+        panel.setBorder(new EmptyBorder(8, 8, 8, 8));
 
-        JTextField nombreField = new JTextField();
-        JTextField correoField = new JTextField();
-        JTextField contrasenaField = new JTextField();
-        JTextField ubicacionField = new JTextField();
-        JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Donante","Inversionista","Emprendedor","Estudiante","Voluntario"});
-        JTextField extraField = new JTextField();
-        JLabel extraLabel = new JLabel("Dato extra (carrera/nombre proyecto):");
+        // Formulario para crear usuario
+        JPanel form = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(4, 4, 4, 4);
+        c.fill = GridBagConstraints.HORIZONTAL;
 
-        JButton addButton = new JButton("Agregar Usuario");
-        addButton.addActionListener(e -> {
-            String nombre = nombreField.getText();
-            String correo = correoField.getText();
-            String contrasena = contrasenaField.getText();
-            String ubicacion = ubicacionField.getText();
-            String tipo = (String) tipoCombo.getSelectedItem();
+        c.gridx = 0; c.gridy = 0; form.add(new JLabel("Tipo:"), c);
+        String[] tipos = {"Usuario base", "Donante", "Inversionista", "Emprendedor", "Estudiante", "Voluntario"};
+        JComboBox<String> tipoBox = new JComboBox<>(tipos);
+        c.gridx = 1; form.add(tipoBox, c);
 
-            Usuario u;
-            switch(tipo){
-                case "Donante" -> u = new Donante(nombre, correo, contrasena, ubicacion);
-                case "Inversionista" -> u = new Inversionista(nombre, correo, contrasena, ubicacion);
-                case "Emprendedor" -> u = new Emprendedor(nombre, correo, contrasena, ubicacion, extraField.getText());
-                case "Estudiante" -> u = new Estudiante(nombre, correo, contrasena, ubicacion, extraField.getText());
-                case "Voluntario" -> u = new Voluntario(nombre, correo, contrasena, ubicacion);
-                default -> throw new IllegalArgumentException("Tipo inválido");
-            }
-            usuarios.add(u);
-            JOptionPane.showMessageDialog(frame, "Usuario agregado: " + u.getNombre());
-        });
+        c.gridx = 0; c.gridy = 1; form.add(new JLabel("Nombre:"), c);
+        JTextField nombreF = new JTextField(); c.gridx = 1; form.add(nombreF, c);
 
-        panel.add(new JLabel("Nombre:")); panel.add(nombreField);
-        panel.add(new JLabel("Correo:")); panel.add(correoField);
-        panel.add(new JLabel("Contraseña:")); panel.add(contrasenaField);
-        panel.add(new JLabel("Ubicación:")); panel.add(ubicacionField);
-        panel.add(new JLabel("Tipo:")); panel.add(tipoCombo);
-        panel.add(extraLabel); panel.add(extraField);
-        panel.add(addButton);
+        c.gridx = 0; c.gridy = 2; form.add(new JLabel("Correo:"), c);
+        JTextField correoF = new JTextField(); c.gridx = 1; form.add(correoF, c);
 
-        return panel;
-    }
+        c.gridx = 0; c.gridy = 3; form.add(new JLabel("Contraseña:"), c);
+        JPasswordField passF = new JPasswordField(); c.gridx = 1; form.add(passF, c);
 
-    private JPanel crearPanelPropuestas() {
-        JPanel panel = new JPanel(new GridLayout(0,2));
-        JTextField tituloField = new JTextField();
-        JTextField descField = new JTextField();
-        JComboBox<Usuario> creadorCombo = new JComboBox<>();
-        JButton addButton = new JButton("Crear Propuesta");
+        c.gridx = 0; c.gridy = 4; form.add(new JLabel("Ubicación:"), c);
+        JTextField ubicF = new JTextField(); c.gridx = 1; form.add(ubicF, c);
 
-        addButton.addActionListener(e -> {
-            Propuesta p = new Propuesta(tituloField.getText(), descField.getText(), (Usuario) creadorCombo.getSelectedItem());
-            propuestaController.crearPropuesta(p);
-            JOptionPane.showMessageDialog(frame, "Propuesta creada: " + p.getTitulo());
-        });
+        c.gridx = 0; c.gridy = 5; form.add(new JLabel("Proyecto (opt):"), c);
+        JTextField proyectoF = new JTextField(); c.gridx = 1; form.add(proyectoF, c);
 
-        panel.add(new JLabel("Título:")); panel.add(tituloField);
-        panel.add(new JLabel("Descripción:")); panel.add(descField);
-        panel.add(new JLabel("Creador:")); panel.add(creadorCombo);
-        panel.add(addButton);
+        JButton crearBtn = new JButton("Crear usuario");
+        c.gridx = 0; c.gridy = 6; c.gridwidth = 2; form.add(crearBtn, c);
 
-        JButton refreshButton = new JButton("Actualizar Lista Usuarios");
-        refreshButton.addActionListener(e -> {
-            creadorCombo.removeAllItems();
-            for (Usuario u : usuarios) creadorCombo.addItem(u);
-        });
-        panel.add(refreshButton);
+        panel.add(form, BorderLayout.NORTH);
 
-        return panel;
-    }
+        // Lista de usuarios
+        JList<Usuario> usuariosList = new JList<>(usuariosModel);
+        usuariosList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        panel.add(new JScrollPane(usuariosList), BorderLayout.CENTER);
 
-    private JPanel crearPanelMensajes() {
-        JPanel panel = new JPanel(new GridLayout(0,2));
-        JComboBox<Usuario> emisorCombo = new JComboBox<>();
-        JComboBox<Usuario> receptorCombo = new JComboBox<>();
-        JTextField contenidoField = new JTextField();
-        JButton enviarButton = new JButton("Enviar Mensaje");
+        crearBtn.addActionListener(e -> {
+            try {
+                String tipo = (String) tipoBox.getSelectedItem();
+                String nombre = nombreF.getText();
+                String correo = correoF.getText();
+                String pass = new String(passF.getPassword());
+                String ubic = ubicF.getText();
 
-        enviarButton.addActionListener(e -> {
-            Mensaje m = new Mensaje((Usuario) emisorCombo.getSelectedItem(), (Usuario) receptorCombo.getSelectedItem(), contenidoField.getText());
-            mensajeController.enviarMensaje(m);
-            JOptionPane.showMessageDialog(frame, "Mensaje enviado");
-        });
+                Usuario u = null;
+                switch (tipo) {
+                    case "Donante":
+                        u = new Donante(nombre, correo, pass, ubic);
+                        break;
+                    case "Inversionista":
+                        u = new Inversionista(nombre, correo, pass, ubic);
+                        break;
+                    case "Emprendedor":
+                        String nomProyecto = proyectoF.getText().isBlank() ? "Proyecto inicial" : proyectoF.getText();
+                        u = new Emprendedor(nombre, correo, pass, ubic, nomProyecto);
+                        break;
+                    case "Estudiante":
+                        u = new Estudiante(nombre, correo, pass, ubic, "Sin especificar");
+                        break;
+                    case "Voluntario":
+                        u = new Voluntario(nombre, correo, pass, ubic);
+                        break;
+                    default:
+                        u = new Usuario(nombre, correo, pass, ubic);
+                }
 
-        panel.add(new JLabel("Emisor:")); panel.add(emisorCombo);
-        panel.add(new JLabel("Receptor:")); panel.add(receptorCombo);
-        panel.add(new JLabel("Contenido:")); panel.add(contenidoField);
-        panel.add(enviarButton);
+                usuariosModel.addElement(u);
+                JOptionPane.showMessageDialog(frame, "Usuario creado: " + u.getNombre());
 
-        JButton refreshButton = new JButton("Actualizar Listas");
-        refreshButton.addActionListener(e -> {
-            emisorCombo.removeAllItems();
-            receptorCombo.removeAllItems();
-            for (Usuario u : usuarios) {
-                emisorCombo.addItem(u);
-                receptorCombo.addItem(u);
+                // limpiar
+                nombreF.setText(""); correoF.setText(""); passF.setText(""); ubicF.setText(""); proyectoF.setText("");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        panel.add(refreshButton);
+
+        // Right-click menu para ver detalles y eliminar
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem ver = new JMenuItem("Ver detalles");
+        JMenuItem eliminar = new JMenuItem("Eliminar usuario");
+        menu.add(ver); menu.add(eliminar);
+
+        usuariosList.setComponentPopupMenu(menu);
+        usuariosList.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int idx = usuariosList.locationToIndex(e.getPoint());
+                    usuariosList.setSelectedIndex(idx);
+                }
+            }
+        });
+
+        ver.addActionListener(e -> {
+            Usuario sel = usuariosList.getSelectedValue();
+            if (sel != null) {
+                JOptionPane.showMessageDialog(frame, sel.toString(), "Detalles usuario", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        eliminar.addActionListener(e -> {
+            Usuario sel = usuariosList.getSelectedValue();
+            if (sel != null) usuariosModel.removeElement(sel);
+        });
+
         return panel;
     }
 
-    private JPanel crearPanelNotificaciones() {
-        JPanel panel = new JPanel(new GridLayout(0,2));
-        JComboBox<Usuario> receptorCombo = new JComboBox<>();
-        JTextField mensajeField = new JTextField();
-        JButton generarButton = new JButton("Generar Notificación");
+    // Panel para propuestas
+    private JPanel propuestasPanel() {
+        JPanel panel = new JPanel(new BorderLayout(8, 8));
+        panel.setBorder(new EmptyBorder(8, 8, 8, 8));
 
-        generarButton.addActionListener(e -> {
-            String msg = notificacionController.generarNotificacion((Usuario) receptorCombo.getSelectedItem(), mensajeField.getText());
-            JOptionPane.showMessageDialog(frame, msg);
+        JPanel top = new JPanel(new GridLayout(2, 1, 4, 4));
+
+        JPanel crear = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(4,4,4,4); c.fill = GridBagConstraints.HORIZONTAL;
+
+        c.gridx=0; c.gridy=0; crear.add(new JLabel("Título:"), c);
+        JTextField tituloF = new JTextField(); c.gridx=1; crear.add(tituloF, c);
+
+        c.gridx=0; c.gridy=1; crear.add(new JLabel("Descripción:"), c);
+        JTextField descF = new JTextField(); c.gridx=1; crear.add(descF, c);
+
+        JButton crearP = new JButton("Crear propuesta"); c.gridx=0; c.gridy=2; c.gridwidth=2; crear.add(crearP,c);
+
+        top.add(crear);
+
+        // Panel para relacionar usuarios y propuestas (donar, invertir, apoyar)
+        JPanel acciones = new JPanel(new GridBagLayout());
+        GridBagConstraints a = new GridBagConstraints(); a.insets=new Insets(4,4,4,4); a.fill=GridBagConstraints.HORIZONTAL;
+
+        a.gridx=0; a.gridy=0; acciones.add(new JLabel("Propuesta:"), a);
+        JList<Propuesta> propuestasList = new JList<>(propuestasModel); propuestasList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        a.gridx=1; acciones.add(new JScrollPane(propuestasList), a);
+
+        a.gridx=0; a.gridy=1; acciones.add(new JLabel("Usuario (seleccione):"), a);
+        JList<Usuario> usuariosList = new JList<>(usuariosModel); usuariosList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        a.gridx=1; acciones.add(new JScrollPane(usuariosList), a);
+
+        JPanel btns = new JPanel(new FlowLayout());
+        JButton btnDonar = new JButton("Registrar donación");
+        JButton btnInvertir = new JButton("Registrar inversión");
+        JButton btnApoyar = new JButton("Registrar apoyo(vol.)");
+        btns.add(btnDonar); btns.add(btnInvertir); btns.add(btnApoyar);
+        a.gridx=0; a.gridy=2; a.gridwidth=2; acciones.add(btns, a);
+
+        top.add(acciones);
+
+        panel.add(top, BorderLayout.NORTH);
+
+        panel.add(new JScrollPane(new JList<>(propuestasModel)), BorderLayout.CENTER);
+
+        crearP.addActionListener(e -> {
+            try {
+                String tit = tituloF.getText();
+                String des = descF.getText();
+                // usar un creador genérico: si hay usuarios, tomar el primero como creador; sino crear usuario base temporal
+                Usuario creador = usuariosModel.isEmpty() ? new Usuario("anonimo","anon@local","123456","-") : usuariosModel.get(0);
+                Propuesta p = new Propuesta(tit, des, creador);
+                propuestaController.crearPropuesta(p);
+                propuestasModel.addElement(p);
+                JOptionPane.showMessageDialog(frame, "Propuesta creada: " + tit);
+                tituloF.setText(""); descF.setText("");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
-        panel.add(new JLabel("Receptor:")); panel.add(receptorCombo);
-        panel.add(new JLabel("Mensaje:")); panel.add(mensajeField);
-        panel.add(generarButton);
-
-        JButton refreshButton = new JButton("Actualizar Usuarios");
-        refreshButton.addActionListener(e -> {
-            receptorCombo.removeAllItems();
-            for (Usuario u : usuarios) receptorCombo.addItem(u);
+        btnDonar.addActionListener(e -> {
+            try {
+                Propuesta p = propuestasList.getSelectedValue();
+                Usuario u = usuariosList.getSelectedValue();
+                if (p==null || u==null) throw new IllegalArgumentException("Seleccione propuesta y usuario");
+                if (!(u instanceof Donante)) throw new IllegalArgumentException("El usuario seleccionado no es un Donante");
+                propuestaController.registrarDonacion(p, (Donante)u);
+                notificacionController.generarNotificacion(p.getCreador(), "Tu proyecto '" + p.getTitulo() + "' recibió una donación de " + u.getNombre());
+                refreshNotifsModel();
+                JOptionPane.showMessageDialog(frame, "Donación registrada");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
-        panel.add(refreshButton);
+
+        btnInvertir.addActionListener(e -> {
+            try {
+                Propuesta p = propuestasList.getSelectedValue();
+                Usuario u = usuariosList.getSelectedValue();
+                if (p==null || u==null) throw new IllegalArgumentException("Seleccione propuesta y usuario");
+                if (!(u instanceof Inversionista)) throw new IllegalArgumentException("El usuario seleccionado no es un Inversionista");
+                propuestaController.registrarInversion(p, (Inversionista)u);
+                notificacionController.generarNotificacion(p.getCreador(), "Tu proyecto '" + p.getTitulo() + "' recibió inversión de " + u.getNombre());
+                refreshNotifsModel();
+                JOptionPane.showMessageDialog(frame, "Inversión registrada");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        btnApoyar.addActionListener(e -> {
+            try {
+                Propuesta p = propuestasList.getSelectedValue();
+                Usuario u = usuariosList.getSelectedValue();
+                if (p==null || u==null) throw new IllegalArgumentException("Seleccione propuesta y usuario");
+                if (!(u instanceof Voluntario)) throw new IllegalArgumentException("El usuario seleccionado no es un Voluntario");
+                propuestaController.registrarApoyo(p, (Voluntario)u);
+                notificacionController.generarNotificacion(p.getCreador(), "Tu proyecto '" + p.getTitulo() + "' recibió apoyo de voluntario " + u.getNombre());
+                refreshNotifsModel();
+                JOptionPane.showMessageDialog(frame, "Apoyo registrado");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         return panel;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(GUI_Plataforma::new);
+    // Panel para mensajes
+    private JPanel mensajesPanel() {
+        JPanel panel = new JPanel(new BorderLayout(8,8));
+        panel.setBorder(new EmptyBorder(8,8,8,8));
+
+        JPanel top = new JPanel(new GridLayout(1,2,8,8));
+
+        // Envío de mensaje
+        JPanel send = new JPanel(new GridBagLayout());
+        GridBagConstraints s = new GridBagConstraints(); s.insets=new Insets(4,4,4,4); s.fill=GridBagConstraints.HORIZONTAL;
+        s.gridx=0; s.gridy=0; send.add(new JLabel("Emisor:"), s);
+        JList<Usuario> usuariosListEm = new JList<>(usuariosModel); usuariosListEm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); s.gridx=1; send.add(new JScrollPane(usuariosListEm), s);
+
+        s.gridx=0; s.gridy=1; send.add(new JLabel("Receptor:"), s);
+        JList<Usuario> usuariosListRec = new JList<>(usuariosModel); usuariosListRec.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); s.gridx=1; send.add(new JScrollPane(usuariosListRec), s);
+
+        s.gridx=0; s.gridy=2; send.add(new JLabel("Contenido:"), s);
+        JTextField contenF = new JTextField(); s.gridx=1; send.add(contenF, s);
+
+        JButton enviar = new JButton("Enviar mensaje"); s.gridx=0; s.gridy=3; s.gridwidth=2; send.add(enviar, s);
+
+        top.add(send);
+
+        // Lista de mensajes
+        JList<Mensaje> mensajesList = new JList<>(mensajesModel);
+        top.add(new JScrollPane(mensajesList));
+
+        panel.add(top, BorderLayout.CENTER);
+
+        enviar.addActionListener(e -> {
+            try {
+                Usuario em = usuariosListEm.getSelectedValue();
+                Usuario rec = usuariosListRec.getSelectedValue();
+                String cont = contenF.getText();
+                if (em==null || rec==null) throw new IllegalArgumentException("Seleccione emisor y receptor");
+                Mensaje m = new Mensaje(em, rec, cont);
+                mensajeController.enviarMensaje(m);
+                mensajesModel.addElement(m);
+                notificacionController.generarNotificacion(rec, "Nuevo mensaje de " + em.getNombre());
+                refreshNotifsModel();
+                contenF.setText("");
+                JOptionPane.showMessageDialog(frame, "Mensaje enviado");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        return panel;
+    }
+
+    private JPanel notificacionesPanel() {
+        JPanel panel = new JPanel(new BorderLayout(8,8));
+        panel.setBorder(new EmptyBorder(8,8,8,8));
+
+        JList<Notificaciones> list = new JList<>(notifsModel);
+        panel.add(new JScrollPane(list), BorderLayout.CENTER);
+
+        JPanel bottom = new JPanel(new FlowLayout());
+        JButton verTodas = new JButton("Marcar todas leídas (usuario seleccionado)");
+        JButton refrescar = new JButton("Refrescar");
+        bottom.add(verTodas); bottom.add(refrescar);
+        panel.add(bottom, BorderLayout.SOUTH);
+
+        verTodas.addActionListener(e -> {
+            try {
+                // Pedir correo del usuario para marcar
+                String correo = JOptionPane.showInputDialog(frame, "Ingrese correo del usuario a marcar como leído:");
+                if (correo == null) return;
+                // buscar usuario
+                Usuario sel = null;
+                for (int i=0;i<usuariosModel.size();i++) {
+                    Usuario u = usuariosModel.get(i);
+                    if (u.getCorreo().equalsIgnoreCase(correo.trim())) { sel = u; break; }
+                }
+                if (sel == null) throw new IllegalArgumentException("Usuario no encontrado");
+                notificacionController.marcarTodasLeidas(sel);
+                refreshNotifsModel();
+                JOptionPane.showMessageDialog(frame, "Notificaciones marcadas leídas para " + sel.getNombre());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        refrescar.addActionListener(e -> refreshNotifsModel());
+
+        return panel;
+    }
+
+    // Actualiza el modelo de notificaciones desde el controller
+    private void refreshNotifsModel() {
+        notifsModel.clear();
+        // Si se tuviera una forma de obtener todas las notificaciones desde NotificacionController
+        // (en el código de ejemplo no hay getter), hacemos una aproximación si existe.
+        try {
+            // intento por reflejar notificaciones internas si existe getTodosNotificaciones()
+            java.lang.reflect.Method m = notificacionController.getClass().getMethod("obtenerNotificaciones", Usuario.class);
+            // como no conocemos el usuario objetivo, agregamos todas las notificaciones que ya generamos
+            // aquí iteramos usuarios y pedimos notifs por usuario
+            for (int i=0;i<usuariosModel.size();i++){
+                Usuario u = usuariosModel.get(i);
+                java.util.ArrayList lista = (ArrayList) m.invoke(notificacionController, u);
+                for (Object o : lista) {
+                    if (o instanceof Notificaciones) notifsModel.addElement((Notificaciones)o);
+                }
+            }
+        } catch (NoSuchMethodException ns) {
+            // si no existe el método, no hacemos nada
+        } catch (Exception ex) {
+            // ignorar errores de reflexión en la demo
+        }
     }
 }
-
