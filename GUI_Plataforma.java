@@ -1,379 +1,510 @@
-//Mejore la distribución del GUI de igual forma le agregue bloques TryCatch para que no tenga errores
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+public class GUI_Plataforma extends JFrame {
+    private Usuario usuarioActual;
+    private PropuestaController propuestaController;
+    private MensajeController mensajeController;
+    private NotificacionController notificacionController;
 
+    private JPanel panelPrincipal;
+    private CardLayout cardLayout;
 
-public class GUI_Plataforma {
-    private JFrame frame;
+    // Paneles principales
+    private JPanel panelLogin;
+    private JPanel panelDashboard;
+    private JPanel panelPropuestas;
+    private JPanel panelCrearPropuesta;
+    private JPanel panelDetallePropuesta;
 
-    // Controladores / Listas simples para la demo
-    private PropuestaController propuestaController = new PropuestaController();
-    private MensajeController mensajeController = new MensajeController();
-    private NotificacionController notificacionController = new NotificacionController();
+    public GUI_Plataforma() {
+        // Inicializar controladores
+        propuestaController = new PropuestaController();
+        mensajeController = new MensajeController();
+        notificacionController = new NotificacionController();
 
-    // Modelos para JList
-    private DefaultListModel<Usuario> usuariosModel = new DefaultListModel<>();
-    private DefaultListModel<Propuesta> propuestasModel = new DefaultListModel<>();
-    private DefaultListModel<Mensaje> mensajesModel = new DefaultListModel<>();
-    private DefaultListModel<Notificaciones> notifsModel = new DefaultListModel<>();
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GUI_Plataforma().initialize());
+        initComponents();
+        //crearDatosDePrueba();
     }
 
-    private void initialize() {
-        frame = new JFrame("Plataforma - GUI");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 600);
-        frame.setLocationRelativeTo(null);
+    private void initComponents() {
+        setTitle("Plataforma de Apoyo Guatemala");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1200, 800);
+        setLocationRelativeTo(null);
 
-        JTabbedPane tabs = new JTabbedPane();
+        // Layout principal
+        cardLayout = new CardLayout();
+        panelPrincipal = new JPanel(cardLayout);
 
-        tabs.addTab("Usuarios", usuariosPanel());
-        tabs.addTab("Propuestas", propuestasPanel());
-        tabs.addTab("Mensajes", mensajesPanel());
-        tabs.addTab("Notificaciones", notificacionesPanel());
+        // Crear paneles
+        crearPanelLogin();
+        crearPanelDashboard();
+        crearPanelPropuestas();
+        crearPanelCrearPropuesta();
+        crearPanelDetallePropuesta();
 
-        frame.getContentPane().add(tabs);
-        frame.setVisible(true);
+        add(panelPrincipal);
+
+        // Mostrar login inicialmente
+        cardLayout.show(panelPrincipal, "login");
     }
 
-    // Panel para gestionar usuarios
-    private JPanel usuariosPanel() {
-        JPanel panel = new JPanel(new BorderLayout(8, 8));
-        panel.setBorder(new EmptyBorder(8, 8, 8, 8));
+    private void crearPanelLogin() {
+        panelLogin = new JPanel(new BorderLayout());
+        panelLogin.setBackground(new Color(240, 248, 255));
 
-        // Formulario para crear usuario
-        JPanel form = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(4, 4, 4, 4);
-        c.fill = GridBagConstraints.HORIZONTAL;
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        c.gridx = 0; c.gridy = 0; form.add(new JLabel("Tipo:"), c);
-        String[] tipos = {"Usuario base", "Donante", "Inversionista", "Emprendedor", "Estudiante", "Voluntario"};
-        JComboBox<String> tipoBox = new JComboBox<>(tipos);
-        c.gridx = 1; form.add(tipoBox, c);
+        // Título
+        JLabel titulo = new JLabel("Plataforma de Apoyo Guatemala");
+        titulo.setFont(new Font("Arial", Font.BOLD, 28));
+        titulo.setForeground(new Color(25, 118, 210));
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; gbc.insets = new Insets(0, 0, 30, 0);
+        centerPanel.add(titulo, gbc);
 
-        c.gridx = 0; c.gridy = 1; form.add(new JLabel("Nombre:"), c);
-        JTextField nombreF = new JTextField(); c.gridx = 1; form.add(nombreF, c);
+        // Tipo de usuario
+        gbc.gridwidth = 1; gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridx = 0; gbc.gridy = 1;
+        centerPanel.add(new JLabel("Tipo de Usuario:"), gbc);
 
-        c.gridx = 0; c.gridy = 2; form.add(new JLabel("Correo:"), c);
-        JTextField correoF = new JTextField(); c.gridx = 1; form.add(correoF, c);
+        JComboBox<String> tipoUsuario = new JComboBox<>(new String[]{
+                "Estudiante", "Emprendedor", "Inversionista", "Donante", "Voluntario"
+        });
+        gbc.gridx = 1; gbc.gridy = 1;
+        centerPanel.add(tipoUsuario, gbc);
 
-        c.gridx = 0; c.gridy = 3; form.add(new JLabel("Contraseña:"), c);
-        JPasswordField passF = new JPasswordField(); c.gridx = 1; form.add(passF, c);
+        // Campos de entrada
+        JTextField nombreField = new JTextField(20);
+        JTextField correoField = new JTextField(20);
+        JPasswordField passwordField = new JPasswordField(20);
+        JTextField ubicacionField = new JTextField(20);
 
-        c.gridx = 0; c.gridy = 4; form.add(new JLabel("Ubicación:"), c);
-        JTextField ubicF = new JTextField(); c.gridx = 1; form.add(ubicF, c);
+        gbc.gridx = 0; gbc.gridy = 2; centerPanel.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 2; centerPanel.add(nombreField, gbc);
+        gbc.gridx = 0; gbc.gridy = 3; centerPanel.add(new JLabel("Correo:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 3; centerPanel.add(correoField, gbc);
+        gbc.gridx = 0; gbc.gridy = 4; centerPanel.add(new JLabel("Contraseña:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 4; centerPanel.add(passwordField, gbc);
+        gbc.gridx = 0; gbc.gridy = 5; centerPanel.add(new JLabel("Ubicación:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 5; centerPanel.add(ubicacionField, gbc);
 
-        c.gridx = 0; c.gridy = 5; form.add(new JLabel("Proyecto (opt):"), c);
-        JTextField proyectoF = new JTextField(); c.gridx = 1; form.add(proyectoF, c);
+        // Campo adicional según tipo de usuario
+        JTextField campoAdicional = new JTextField(20);
+        JLabel labelAdicional = new JLabel("Campo adicional:");
+        gbc.gridx = 0; gbc.gridy = 6; centerPanel.add(labelAdicional, gbc);
+        gbc.gridx = 1; gbc.gridy = 6; centerPanel.add(campoAdicional, gbc);
 
-        JButton crearBtn = new JButton("Crear usuario");
-        c.gridx = 0; c.gridy = 6; c.gridwidth = 2; form.add(crearBtn, c);
+        // Actualizar campo adicional según tipo
+        tipoUsuario.addActionListener(e -> {
+            String tipo = (String) tipoUsuario.getSelectedItem();
+            switch (tipo) {
+                case "Estudiante":
+                    labelAdicional.setText("Carrera:");
+                    break;
+                case "Emprendedor":
+                    labelAdicional.setText("Proyecto Principal:");
+                    break;
+                default:
+                    labelAdicional.setText("Campo adicional:");
+                    break;
+            }
+        });
 
-        panel.add(form, BorderLayout.NORTH);
+        // Botón de login
+        JButton btnLogin = new JButton("Ingresar");
+        btnLogin.setBackground(new Color(76, 175, 80));
+        btnLogin.setForeground(Color.WHITE);
+        btnLogin.setFont(new Font("Arial", Font.BOLD, 14));
+        gbc.gridx = 1; gbc.gridy = 7; gbc.insets = new Insets(20, 5, 5, 5);
+        centerPanel.add(btnLogin, gbc);
 
-        // Lista de usuarios
-        JList<Usuario> usuariosList = new JList<>(usuariosModel);
-        usuariosList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        panel.add(new JScrollPane(usuariosList), BorderLayout.CENTER);
-
-        crearBtn.addActionListener(e -> {
+        btnLogin.addActionListener(e -> {
             try {
-                String tipo = (String) tipoBox.getSelectedItem();
-                String nombre = nombreF.getText();
-                String correo = correoF.getText();
-                String pass = new String(passF.getPassword());
-                String ubic = ubicF.getText();
+                String tipo = (String) tipoUsuario.getSelectedItem();
+                String nombre = nombreField.getText();
+                String correo = correoField.getText();
+                String password = new String(passwordField.getPassword());
+                String ubicacion = ubicacionField.getText();
+                String adicional = campoAdicional.getText();
 
-                Usuario u = null;
+                // Crear usuario según tipo
                 switch (tipo) {
-                    case "Donante":
-                        u = new Donante(nombre, correo, pass, ubic);
-                        break;
-                    case "Inversionista":
-                        u = new Inversionista(nombre, correo, pass, ubic);
+                    case "Estudiante":
+                        usuarioActual = new Estudiante(nombre, correo, password, ubicacion, adicional);
                         break;
                     case "Emprendedor":
-                        String nomProyecto = proyectoF.getText().isBlank() ? "Proyecto inicial" : proyectoF.getText();
-                        u = new Emprendedor(nombre, correo, pass, ubic, nomProyecto);
+                        usuarioActual = new Emprendedor(nombre, correo, password, ubicacion, adicional);
                         break;
-                    case "Estudiante":
-                        u = new Estudiante(nombre, correo, pass, ubic, "Sin especificar");
+                    case "Inversionista":
+                        usuarioActual = new Inversionista(nombre, correo, password, ubicacion);
+                        break;
+                    case "Donante":
+                        usuarioActual = new Donante(nombre, correo, password, ubicacion);
                         break;
                     case "Voluntario":
-                        u = new Voluntario(nombre, correo, pass, ubic);
+                        usuarioActual = new Voluntario(nombre, correo, password, ubicacion);
                         break;
-                    default:
-                        u = new Usuario(nombre, correo, pass, ubic);
                 }
 
-                usuariosModel.addElement(u);
-                JOptionPane.showMessageDialog(frame, "Usuario creado: " + u.getNombre());
+                actualizarDashboard();
+                cardLayout.show(panelPrincipal, "dashboard");
 
-                // limpiar
-                nombreF.setText(""); correoF.setText(""); passF.setText(""); ubicF.setText(""); proyectoF.setText("");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
             }
         });
 
-        // Right-click menu para ver detalles y eliminar
-        JPopupMenu menu = new JPopupMenu();
-        JMenuItem ver = new JMenuItem("Ver detalles");
-        JMenuItem eliminar = new JMenuItem("Eliminar usuario");
-        menu.add(ver); menu.add(eliminar);
-
-        usuariosList.setComponentPopupMenu(menu);
-        usuariosList.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    int idx = usuariosList.locationToIndex(e.getPoint());
-                    usuariosList.setSelectedIndex(idx);
-                }
-            }
-        });
-
-        ver.addActionListener(e -> {
-            Usuario sel = usuariosList.getSelectedValue();
-            if (sel != null) {
-                JOptionPane.showMessageDialog(frame, sel.toString(), "Detalles usuario", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-
-        eliminar.addActionListener(e -> {
-            Usuario sel = usuariosList.getSelectedValue();
-            if (sel != null) usuariosModel.removeElement(sel);
-        });
-
-        return panel;
+        panelLogin.add(centerPanel, BorderLayout.CENTER);
+        panelPrincipal.add(panelLogin, "login");
     }
 
-    // Panel para propuestas
-    private JPanel propuestasPanel() {
-        JPanel panel = new JPanel(new BorderLayout(8, 8));
-        panel.setBorder(new EmptyBorder(8, 8, 8, 8));
+    private void crearPanelDashboard() {
+        panelDashboard = new JPanel(new BorderLayout());
 
-        JPanel top = new JPanel(new GridLayout(2, 1, 4, 4));
+        // Header
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(new Color(25, 118, 210));
+        header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JPanel crear = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(4,4,4,4); c.fill = GridBagConstraints.HORIZONTAL;
+        JLabel bienvenida = new JLabel("Bienvenido a la Plataforma de Apoyo");
+        bienvenida.setForeground(Color.WHITE);
+        bienvenida.setFont(new Font("Arial", Font.BOLD, 18));
+        header.add(bienvenida, BorderLayout.WEST);
 
-        c.gridx=0; c.gridy=0; crear.add(new JLabel("Título:"), c);
-        JTextField tituloF = new JTextField(); c.gridx=1; crear.add(tituloF, c);
-
-        c.gridx=0; c.gridy=1; crear.add(new JLabel("Descripción:"), c);
-        JTextField descF = new JTextField(); c.gridx=1; crear.add(descF, c);
-
-        JButton crearP = new JButton("Crear propuesta"); c.gridx=0; c.gridy=2; c.gridwidth=2; crear.add(crearP,c);
-
-        top.add(crear);
-
-        // Panel para relacionar usuarios y propuestas (donar, invertir, apoyar)
-        JPanel acciones = new JPanel(new GridBagLayout());
-        GridBagConstraints a = new GridBagConstraints(); a.insets=new Insets(4,4,4,4); a.fill=GridBagConstraints.HORIZONTAL;
-
-        a.gridx=0; a.gridy=0; acciones.add(new JLabel("Propuesta:"), a);
-        JList<Propuesta> propuestasList = new JList<>(propuestasModel); propuestasList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        a.gridx=1; acciones.add(new JScrollPane(propuestasList), a);
-
-        a.gridx=0; a.gridy=1; acciones.add(new JLabel("Usuario (seleccione):"), a);
-        JList<Usuario> usuariosList = new JList<>(usuariosModel); usuariosList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        a.gridx=1; acciones.add(new JScrollPane(usuariosList), a);
-
-        JPanel btns = new JPanel(new FlowLayout());
-        JButton btnDonar = new JButton("Registrar donación");
-        JButton btnInvertir = new JButton("Registrar inversión");
-        JButton btnApoyar = new JButton("Registrar apoyo(vol.)");
-        btns.add(btnDonar); btns.add(btnInvertir); btns.add(btnApoyar);
-        a.gridx=0; a.gridy=2; a.gridwidth=2; acciones.add(btns, a);
-
-        top.add(acciones);
-
-        panel.add(top, BorderLayout.NORTH);
-
-        panel.add(new JScrollPane(new JList<>(propuestasModel)), BorderLayout.CENTER);
-
-        crearP.addActionListener(e -> {
-            try {
-                String tit = tituloF.getText();
-                String des = descF.getText();
-                // usar un creador genérico: si hay usuarios, tomar el primero como creador; sino crear usuario base temporal
-                Usuario creador = usuariosModel.isEmpty() ? new Usuario("anonimo","anon@local","123456","-") : usuariosModel.get(0);
-                Propuesta p = new Propuesta(tit, des, creador);
-                propuestaController.crearPropuesta(p);
-                propuestasModel.addElement(p);
-                JOptionPane.showMessageDialog(frame, "Propuesta creada: " + tit);
-                tituloF.setText(""); descF.setText("");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        JButton btnCerrarSesion = new JButton("Cerrar Sesión");
+        btnCerrarSesion.setBackground(Color.WHITE);
+        btnCerrarSesion.addActionListener(e -> {
+            usuarioActual = null;
+            cardLayout.show(panelPrincipal, "login");
         });
+        header.add(btnCerrarSesion, BorderLayout.EAST);
 
-        btnDonar.addActionListener(e -> {
-            try {
-                Propuesta p = propuestasList.getSelectedValue();
-                Usuario u = usuariosList.getSelectedValue();
-                if (p==null || u==null) throw new IllegalArgumentException("Seleccione propuesta y usuario");
-                if (!(u instanceof Donante)) throw new IllegalArgumentException("El usuario seleccionado no es un Donante");
-                propuestaController.registrarDonacion(p, (Donante)u);
-                notificacionController.generarNotificacion(p.getCreador(), "Tu proyecto '" + p.getTitulo() + "' recibió una donación de " + u.getNombre());
-                refreshNotifsModel();
-                JOptionPane.showMessageDialog(frame, "Donación registrada");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        // Menú lateral
+        JPanel menuLateral = new JPanel();
+        menuLateral.setLayout(new BoxLayout(menuLateral, BoxLayout.Y_AXIS));
+        menuLateral.setBackground(new Color(250, 250, 250));
+        menuLateral.setBorder(new EmptyBorder(20, 20, 20, 20));
+        menuLateral.setPreferredSize(new Dimension(200, 0));
+
+        JButton btnVerPropuestas = crearBotonMenu("Ver Propuestas");
+        btnVerPropuestas.addActionListener(e -> {
+            actualizarPropuestas();
+            cardLayout.show(panelPrincipal, "propuestas");
         });
+        menuLateral.add(btnVerPropuestas);
 
-        btnInvertir.addActionListener(e -> {
-            try {
-                Propuesta p = propuestasList.getSelectedValue();
-                Usuario u = usuariosList.getSelectedValue();
-                if (p==null || u==null) throw new IllegalArgumentException("Seleccione propuesta y usuario");
-                if (!(u instanceof Inversionista)) throw new IllegalArgumentException("El usuario seleccionado no es un Inversionista");
-                propuestaController.registrarInversion(p, (Inversionista)u);
-                notificacionController.generarNotificacion(p.getCreador(), "Tu proyecto '" + p.getTitulo() + "' recibió inversión de " + u.getNombre());
-                refreshNotifsModel();
-                JOptionPane.showMessageDialog(frame, "Inversión registrada");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        JButton btnCrearPropuesta = crearBotonMenu("Crear Propuesta");
+        btnCrearPropuesta.addActionListener(e -> cardLayout.show(panelPrincipal, "crearPropuesta"));
+        menuLateral.add(btnCrearPropuesta);
 
-        btnApoyar.addActionListener(e -> {
-            try {
-                Propuesta p = propuestasList.getSelectedValue();
-                Usuario u = usuariosList.getSelectedValue();
-                if (p==null || u==null) throw new IllegalArgumentException("Seleccione propuesta y usuario");
-                if (!(u instanceof Voluntario)) throw new IllegalArgumentException("El usuario seleccionado no es un Voluntario");
-                propuestaController.registrarApoyo(p, (Voluntario)u);
-                notificacionController.generarNotificacion(p.getCreador(), "Tu proyecto '" + p.getTitulo() + "' recibió apoyo de voluntario " + u.getNombre());
-                refreshNotifsModel();
-                JOptionPane.showMessageDialog(frame, "Apoyo registrado");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        panelDashboard.add(header, BorderLayout.NORTH);
+        panelDashboard.add(menuLateral, BorderLayout.WEST);
 
-        return panel;
+        panelPrincipal.add(panelDashboard, "dashboard");
     }
 
-    // Panel para mensajes
-    private JPanel mensajesPanel() {
-        JPanel panel = new JPanel(new BorderLayout(8,8));
-        panel.setBorder(new EmptyBorder(8,8,8,8));
+    private void crearPanelPropuestas() {
+        panelPropuestas = new JPanel(new BorderLayout());
 
-        JPanel top = new JPanel(new GridLayout(1,2,8,8));
+        // Header
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        // Envío de mensaje
-        JPanel send = new JPanel(new GridBagLayout());
-        GridBagConstraints s = new GridBagConstraints(); s.insets=new Insets(4,4,4,4); s.fill=GridBagConstraints.HORIZONTAL;
-        s.gridx=0; s.gridy=0; send.add(new JLabel("Emisor:"), s);
-        JList<Usuario> usuariosListEm = new JList<>(usuariosModel); usuariosListEm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); s.gridx=1; send.add(new JScrollPane(usuariosListEm), s);
+        JLabel titulo = new JLabel("Propuestas Disponibles");
+        titulo.setFont(new Font("Arial", Font.BOLD, 20));
+        header.add(titulo, BorderLayout.WEST);
 
-        s.gridx=0; s.gridy=1; send.add(new JLabel("Receptor:"), s);
-        JList<Usuario> usuariosListRec = new JList<>(usuariosModel); usuariosListRec.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); s.gridx=1; send.add(new JScrollPane(usuariosListRec), s);
+        JButton btnVolver = new JButton("Volver");
+        btnVolver.addActionListener(e -> cardLayout.show(panelPrincipal, "dashboard"));
+        header.add(btnVolver, BorderLayout.EAST);
 
-        s.gridx=0; s.gridy=2; send.add(new JLabel("Contenido:"), s);
-        JTextField contenF = new JTextField(); s.gridx=1; send.add(contenF, s);
+        panelPropuestas.add(header, BorderLayout.NORTH);
+        panelPrincipal.add(panelPropuestas, "propuestas");
+    }
 
-        JButton enviar = new JButton("Enviar mensaje"); s.gridx=0; s.gridy=3; s.gridwidth=2; send.add(enviar, s);
+    private void crearPanelCrearPropuesta() {
+        panelCrearPropuesta = new JPanel(new BorderLayout());
 
-        top.add(send);
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Lista de mensajes
-        JList<Mensaje> mensajesList = new JList<>(mensajesModel);
-        top.add(new JScrollPane(mensajesList));
+        // Título
+        JLabel titulo = new JLabel("Crear Nueva Propuesta");
+        titulo.setFont(new Font("Arial", Font.BOLD, 20));
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        centerPanel.add(titulo, gbc);
 
-        panel.add(top, BorderLayout.CENTER);
+        // Campos
+        JTextField tituloField = new JTextField(30);
+        JTextArea descripcionArea = new JTextArea(5, 30);
+        descripcionArea.setLineWrap(true);
+        JScrollPane scrollDesc = new JScrollPane(descripcionArea);
+        JTextField metaField = new JTextField(30);
 
-        enviar.addActionListener(e -> {
+        gbc.gridwidth = 1;
+        gbc.gridx = 0; gbc.gridy = 1; centerPanel.add(new JLabel("Título:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 1; centerPanel.add(tituloField, gbc);
+        gbc.gridx = 0; gbc.gridy = 2; centerPanel.add(new JLabel("Descripción:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 2; centerPanel.add(scrollDesc, gbc);
+        gbc.gridx = 0; gbc.gridy = 3; centerPanel.add(new JLabel("Meta ($):"), gbc);
+        gbc.gridx = 1; gbc.gridy = 3; centerPanel.add(metaField, gbc);
+
+        // Botones
+        JPanel botones = new JPanel();
+        JButton btnCrear = new JButton("Crear Propuesta");
+        JButton btnCancelar = new JButton("Cancelar");
+
+        btnCrear.setBackground(new Color(76, 175, 80));
+        btnCrear.setForeground(Color.WHITE);
+
+        btnCrear.addActionListener(e -> {
             try {
-                Usuario em = usuariosListEm.getSelectedValue();
-                Usuario rec = usuariosListRec.getSelectedValue();
-                String cont = contenF.getText();
-                if (em==null || rec==null) throw new IllegalArgumentException("Seleccione emisor y receptor");
-                Mensaje m = new Mensaje(em, rec, cont);
-                mensajeController.enviarMensaje(m);
-                mensajesModel.addElement(m);
-                notificacionController.generarNotificacion(rec, "Nuevo mensaje de " + em.getNombre());
-                refreshNotifsModel();
-                contenF.setText("");
-                JOptionPane.showMessageDialog(frame, "Mensaje enviado");
+                String tituloTexto = tituloField.getText();
+                String descripcion = descripcionArea.getText();
+                double meta = Double.parseDouble(metaField.getText());
+
+                Propuesta nuevaPropuesta = new Propuesta(tituloTexto, descripcion, usuarioActual);
+                nuevaPropuesta.setMeta(meta);
+                propuestaController.crearPropuesta(nuevaPropuesta);
+
+                JOptionPane.showMessageDialog(this, "Propuesta creada exitosamente");
+
+                // Limpiar campos
+                tituloField.setText("");
+                descripcionArea.setText("");
+                metaField.setText("");
+
+                cardLayout.show(panelPrincipal, "dashboard");
+
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
             }
         });
 
-        return panel;
+        btnCancelar.addActionListener(e -> cardLayout.show(panelPrincipal, "dashboard"));
+
+        botones.add(btnCrear);
+        botones.add(btnCancelar);
+
+        gbc.gridx = 1; gbc.gridy = 4;
+        centerPanel.add(botones, gbc);
+
+        panelCrearPropuesta.add(centerPanel, BorderLayout.CENTER);
+        panelPrincipal.add(panelCrearPropuesta, "crearPropuesta");
     }
 
-    private JPanel notificacionesPanel() {
-        JPanel panel = new JPanel(new BorderLayout(8,8));
-        panel.setBorder(new EmptyBorder(8,8,8,8));
-
-        JList<Notificaciones> list = new JList<>(notifsModel);
-        panel.add(new JScrollPane(list), BorderLayout.CENTER);
-
-        JPanel bottom = new JPanel(new FlowLayout());
-        JButton verTodas = new JButton("Marcar todas leídas (usuario seleccionado)");
-        JButton refrescar = new JButton("Refrescar");
-        bottom.add(verTodas); bottom.add(refrescar);
-        panel.add(bottom, BorderLayout.SOUTH);
-
-        verTodas.addActionListener(e -> {
-            try {
-                // Pedir correo del usuario para marcar
-                String correo = JOptionPane.showInputDialog(frame, "Ingrese correo del usuario a marcar como leído:");
-                if (correo == null) return;
-                // buscar usuario
-                Usuario sel = null;
-                for (int i=0;i<usuariosModel.size();i++) {
-                    Usuario u = usuariosModel.get(i);
-                    if (u.getCorreo().equalsIgnoreCase(correo.trim())) { sel = u; break; }
-                }
-                if (sel == null) throw new IllegalArgumentException("Usuario no encontrado");
-                notificacionController.marcarTodasLeidas(sel);
-                refreshNotifsModel();
-                JOptionPane.showMessageDialog(frame, "Notificaciones marcadas leídas para " + sel.getNombre());
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        refrescar.addActionListener(e -> refreshNotifsModel());
-
-        return panel;
+    private void crearPanelDetallePropuesta() {
+        panelDetallePropuesta = new JPanel(new BorderLayout());
+        panelPrincipal.add(panelDetallePropuesta, "detallePropuesta");
     }
 
-    // Actualiza el modelo de notificaciones desde el controller
-    private void refreshNotifsModel() {
-        notifsModel.clear();
-        // Si se tuviera una forma de obtener todas las notificaciones desde NotificacionController
-        // (en el código de ejemplo no hay getter), hacemos una aproximación si existe.
-        try {
-            // intento por reflejar notificaciones internas si existe getTodosNotificaciones()
-            java.lang.reflect.Method m = notificacionController.getClass().getMethod("obtenerNotificaciones", Usuario.class);
-            // como no conocemos el usuario objetivo, agregamos todas las notificaciones que ya generamos
-            // aquí iteramos usuarios y pedimos notifs por usuario
-            for (int i=0;i<usuariosModel.size();i++){
-                Usuario u = usuariosModel.get(i);
-                java.util.ArrayList lista = (ArrayList) m.invoke(notificacionController, u);
-                for (Object o : lista) {
-                    if (o instanceof Notificaciones) notifsModel.addElement((Notificaciones)o);
-                }
+    private JButton crearBotonMenu(String texto) {
+        JButton boton = new JButton(texto);
+        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        boton.setMaximumSize(new Dimension(160, 40));
+        boton.setBackground(Color.WHITE);
+        // FIX: reemplazar por un borde válido
+        boton.setBorder(BorderFactory.createRaisedBevelBorder());
+        return boton;
+    }
+
+    private void actualizarDashboard() {
+        if (usuarioActual != null) {
+            // Actualizar información del usuario en el dashboard
+            Component[] components = ((JPanel) panelDashboard.getComponent(0)).getComponents();
+            if (components.length > 0 && components[0] instanceof JLabel) {
+                ((JLabel) components[0]).setText("Bienvenido, " + usuarioActual.getNombre());
             }
-        } catch (NoSuchMethodException ns) {
-            // si no existe el método, no hacemos nada
-        } catch (Exception ex) {
-            // ignorar errores de reflexión en la demo
         }
+    }
+
+    private void actualizarPropuestas() {
+        // Limpiar panel anterior
+        panelPropuestas.removeAll();
+
+        // Header
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBorder(new EmptyBorder(10, 20, 10, 20));
+
+        JLabel titulo = new JLabel("Propuestas Disponibles");
+        titulo.setFont(new Font("Arial", Font.BOLD, 20));
+        header.add(titulo, BorderLayout.WEST);
+
+        JButton btnVolver = new JButton("Volver");
+        btnVolver.addActionListener(e -> cardLayout.show(panelPrincipal, "dashboard"));
+        header.add(btnVolver, BorderLayout.EAST);
+
+        // Lista de propuestas
+        JPanel listaPropuestas = new JPanel();
+        listaPropuestas.setLayout(new BoxLayout(listaPropuestas, BoxLayout.Y_AXIS));
+
+        for (Propuesta propuesta : propuestaController.getPropuestas()) {
+            JPanel cardPropuesta = crearCardPropuesta(propuesta);
+            listaPropuestas.add(cardPropuesta);
+            listaPropuestas.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
+
+        JScrollPane scrollPane = new JScrollPane(listaPropuestas);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        panelPropuestas.add(header, BorderLayout.NORTH);
+        panelPropuestas.add(scrollPane, BorderLayout.CENTER);
+
+        panelPropuestas.revalidate();
+        panelPropuestas.repaint();
+    }
+
+    private JPanel crearCardPropuesta(Propuesta propuesta) {
+        JPanel card = new JPanel(new BorderLayout());
+        // FIX: borde válido
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createRaisedBevelBorder(),
+                new EmptyBorder(15, 15, 15, 15)
+        ));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
+
+        // Información de la propuesta
+        JPanel info = new JPanel(new GridLayout(4, 1));
+        info.add(new JLabel("Título: " + propuesta.getTitulo()));
+        info.add(new JLabel("Creador: " + propuesta.getCreador().getNombre()));
+        info.add(new JLabel("Descripción: " +
+                (propuesta.getDescripcion().length() > 100 ?
+                        propuesta.getDescripcion().substring(0, 100) + "..." :
+                        propuesta.getDescripcion())));
+
+        // Barra de progreso
+        double progreso = (propuesta.getRecaudado() / propuesta.getMeta()) * 100;
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setValue((int) progreso);
+        progressBar.setString(String.format("$%.2f / $%.2f (%.1f%%)",
+                propuesta.getRecaudado(), propuesta.getMeta(), progreso));
+        progressBar.setStringPainted(true);
+        info.add(progressBar);
+
+        // Botones de acción
+        JPanel botones = new JPanel();
+        botones.setLayout(new BoxLayout(botones, BoxLayout.Y_AXIS));
+
+        if (usuarioActual instanceof Inversionista || usuarioActual instanceof Donante) {
+            JButton btnApoyo = new JButton("Apoyar Económicamente");
+            btnApoyo.setBackground(new Color(76, 175, 80));
+            btnApoyo.setForeground(Color.WHITE);
+            btnApoyo.addActionListener(e -> mostrarDialogoApoyo(propuesta, "economico"));
+            botones.add(btnApoyo);
+        }
+
+        if (usuarioActual instanceof Voluntario) {
+            JButton btnVoluntario = new JButton("Ofrecer Ayuda");
+            btnVoluntario.setBackground(new Color(255, 152, 0));
+            btnVoluntario.setForeground(Color.WHITE);
+            btnVoluntario.addActionListener(e -> mostrarDialogoApoyo(propuesta, "voluntario"));
+            botones.add(btnVoluntario);
+        }
+
+        JButton btnDetalle = new JButton("Ver Detalle");
+        btnDetalle.addActionListener(e -> mostrarDetallePropuesta(propuesta));
+        botones.add(btnDetalle);
+
+        card.add(info, BorderLayout.CENTER);
+        card.add(botones, BorderLayout.EAST);
+
+        return card;
+    }
+
+    private void mostrarDialogoApoyo(Propuesta propuesta, String tipo) {
+        if (tipo.equals("economico")) {
+            String input = JOptionPane.showInputDialog(this,
+                    "Ingrese la cantidad a aportar:",
+                    "Apoyo Económico",
+                    JOptionPane.QUESTION_MESSAGE);
+
+            if (input != null && !input.trim().isEmpty()) {
+                try {
+                    double cantidad = Double.parseDouble(input);
+                    if (cantidad > 0) {
+                        propuesta.agregarRecaudacion(cantidad);
+
+                        if (usuarioActual instanceof Inversionista) {
+                            propuestaController.registrarInversion(propuesta, (Inversionista) usuarioActual);
+                        } else if (usuarioActual instanceof Donante) {
+                            propuestaController.registrarDonacion(propuesta, (Donante) usuarioActual);
+                        }
+
+                        JOptionPane.showMessageDialog(this,
+                                "¡Gracias por tu apoyo de $" + cantidad + "!");
+                        actualizarPropuestas();
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Cantidad inválida");
+                }
+            }
+        } else if (tipo.equals("voluntario")) {
+            String[] opciones = {"Habilidades técnicas", "Trabajo gratuito", "Mentoría", "Consultoría"};
+            String seleccion = (String) JOptionPane.showInputDialog(this,
+                    "Seleccione el tipo de apoyo que desea ofrecer:",
+                    "Apoyo Voluntario",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    opciones,
+                    opciones[0]);
+
+            if (seleccion != null) {
+                propuestaController.registrarApoyo(propuesta, (Voluntario) usuarioActual);
+                JOptionPane.showMessageDialog(this,
+                        "¡Gracias por ofrecer " + seleccion + "!");
+                actualizarPropuestas();
+            }
+        }
+    }
+
+    private void mostrarDetallePropuesta(Propuesta propuesta) {
+        // Crear ventana de detalle
+        JFrame ventanaDetalle = new JFrame("Detalle de Propuesta");
+        ventanaDetalle.setSize(600, 400);
+        ventanaDetalle.setLocationRelativeTo(this);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        panel.add(new JLabel("Título: " + propuesta.getTitulo()));
+        panel.add(new JLabel("Creador: " + propuesta.getCreador().getNombre()));
+        panel.add(new JLabel("Descripción: " + propuesta.getDescripcion()));
+        panel.add(new JLabel("Meta: $" + propuesta.getMeta()));
+        panel.add(new JLabel("Recaudado: $" + propuesta.getRecaudado()));
+
+        ventanaDetalle.add(panel);
+        ventanaDetalle.setVisible(true);
+    }
+
+    private void crearDatosDePrueba() {
+        Emprendedor e1 = new Emprendedor("Carlos López", "carlos@mail.com", "123", "Guatemala", "Reciclaje de Plástico");
+        Emprendedor e2 = new Emprendedor("María Pérez", "maria@mail.com", "123", "Antigua", "Energía Solar");
+
+        Propuesta p1 = new Propuesta("Proyecto Reciclaje", "Convertir plástico en materiales de construcción.", e1);
+        p1.setMeta(5000);
+        p1.agregarRecaudacion(1200);
+
+        Propuesta p2 = new Propuesta("Energía Solar Rural", "Instalación de paneles solares en áreas rurales.", e2);
+        p2.setMeta(10000);
+        p2.agregarRecaudacion(3000);
+
+        propuestaController.crearPropuesta(p1);
+        propuestaController.crearPropuesta(p2);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            GUI_Plataforma ventana = new GUI_Plataforma();
+            ventana.setVisible(true);
+        });
     }
 }
