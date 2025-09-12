@@ -1,4 +1,5 @@
-// ===== Versión SIN try-catch =====
+// Revisión esta bien pero falta mejorar la interfaz y de igual forma no tiene Try Catch
+//Falto de algunas funciones y mejorar la distribucion
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
