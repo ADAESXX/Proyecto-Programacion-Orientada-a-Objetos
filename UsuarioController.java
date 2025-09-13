@@ -1,58 +1,50 @@
-//clase revisada - validacion completa
-
-import java.util.*;
-
+// Usuario.java
 public class UsuarioController {
+    private int id;
+    private String nombre;
+    private String correo;
+    private String ubicacion;
+    private String contrasena;
+    private boolean verificado;
 
-    // “Persistencia” en memoria por ahora (clave = correo)
-    private Map<String, Usuario> usuarios;
+    // Constructor vacío
+    public UsuarioController() {}
 
-    public UsuarioController(){
-        usuarios=new HashMap<>();
+    // Constructor sin id (para registrar)
+    public UsuarioController(String nombre, String correo, String ubicacion, String contrasena, boolean verificado) {
+        this.nombre = nombre;
+        this.correo = correo;
+        this.ubicacion = ubicacion;
+        this.contrasena = contrasena;
+        this.verificado = verificado;
     }
 
-    /** registraUsuario: registra un nuevo usuario */
-    public boolean registraUsuario(Usuario u) {
-        if (u == null) return false;
-        if (usuarios.containsKey(u.getCorreo())) return false;
-        // guardar contraseña como hash y escribir en BD
-        usuarios.put(u.getCorreo(), u);
-        return true;
+    // Constructor con id (para obtener desde BD)
+    public UsuarioController(int id, String nombre, String correo, String ubicacion, String contrasena, boolean verificado) {
+        this.id = id;
+        this.nombre = nombre;
+        this.correo = correo;
+        this.ubicacion = ubicacion;
+        this.contrasena = contrasena;
+        this.verificado = verificado;
     }
 
-    // iniciarSecion (sic en el documento): autenticación simple
-    public Optional<Usuario> iniciarSesion(String correo, String contrasena) {
-        Usuario u = usuarios.get(correo);
-        if (u != null && u.getContrasena().equals(contrasena)) { // TODO: verificar hash
-            return Optional.of(u);
-        }
-        return Optional.empty();
-    }
+    // Getters y setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    /** editarPerfiles: edita perfil del usuario identificado por correo */
-    public boolean editarPerfiles(String correo, String nuevoNombre, String nuevaUbicacion, String nuevaContrasena, String nuevoCorreo) {
-        Usuario u = usuarios.get(correo);
-        if (u == null) return false;
-        if (!correo.equals(nuevoCorreo) && usuarios.containsKey(nuevoCorreo)){
-             return false;
-        }
-        u.actualizarPerfil(nuevoNombre, nuevaUbicacion, nuevaContrasena, nuevoCorreo);
-        //validacion por si cambia el correo, se actualixe la clave del mapa
-        if (!correo.equals(nuevoCorreo)) {
-            usuarios.remove(correo);
-            usuarios.put(nuevoCorreo, u);
-        }
-        return true;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    /** verificarUsuario: marca la cuenta como verificada */
-    public boolean verificarUsuario(String correo) {
-        Usuario u = usuarios.get(correo);
-        if (u == null) return false;
-        u.verificarCuenta();
-        return true;
-    }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
 
-    // Auxiliar para pruebas
-    public Map<String, Usuario> getUsuarios() { return usuarios; }
+    public String getUbicacion() { return ubicacion; }
+    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
+
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+
+    public boolean isVerificado() { return verificado; }
+    public void setVerificado(boolean verificado) { this.verificado = verificado; }
 }
