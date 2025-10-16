@@ -26,7 +26,7 @@ public class Propuesta {
     }
 
     public void setTitulo(String titulo) {
-        if (titulo == null || titulo.isBlank()){
+        if (titulo == null || titulo.isEmpty()){
             throw new IllegalArgumentException("Título vacío o nulo, por lo que es inválido");
         }
         this.titulo = titulo;
@@ -37,7 +37,7 @@ public class Propuesta {
     }
 
     public void setDescripcion(String descripcion) {
-        if (descripcion == null || descripcion.isBlank()){
+        if (descripcion == null || descripcion.isEmpty()){
             throw new IllegalArgumentException("Descripción vacía o nula, por lo que inválido");
         }
         this.descripcion = descripcion;
