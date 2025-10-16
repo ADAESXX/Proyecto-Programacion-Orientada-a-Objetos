@@ -17,7 +17,7 @@ public class Inversionista extends Usuario {
 
     // Método para registrar una nueva inversión en la lista
     public void setInvertir(String inversion) {
-        if (inversion == null || inversion.isBlank()){ 
+        if (inversion == null || inversion.isEmpty()){ 
             throw new IllegalArgumentException("La inversión es inválida");
         }
         this.inversiones.add(inversion.trim());
@@ -29,4 +29,5 @@ public class Inversionista extends Usuario {
     }
 
 }
+
 
