@@ -16,7 +16,7 @@ class Donante extends Usuario {
     }
 //se agrega las donaciones en la lista
     public void setDonaciones(String donacion){ 
-        if (donacion == null || donacion.isBlank()){ 
+        if (donacion == null || donacion.isEmpty()){ 
                 throw new IllegalArgumentException("Donació inválida");
         }
         this.donaciones.add(donacion.trim());
@@ -24,3 +24,4 @@ class Donante extends Usuario {
 }
 //quite getDonacioneRealizadas, ya que es lo mismo que hace getDonaciones, y seria tonto dejarlo
 //se pusieron las listas para que sea mas facil encontrar las donaciones 
+
