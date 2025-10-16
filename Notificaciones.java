@@ -19,7 +19,7 @@ public class Notificaciones {
     }
     public String getMensaje() { return mensaje; }
     public void setMensaje(String mensaje) { 
-        if (mensaje == null || mensaje.isBlank()){ 
+        if (mensaje == null || mensaje.isEmpty()){ 
                 throw new IllegalArgumentException("Mensaje inválido");
         }
         this.mensaje = mensaje; 
@@ -35,3 +35,4 @@ public class Notificaciones {
 }
 //puse el toString que devuelve uan representacion mas legible de la notificacion 
 //mas tambien tiene el get que se usa para el receptor y el mensaje 
+
