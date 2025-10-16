@@ -29,7 +29,7 @@ class Emprendedor extends Usuario {
 
     // Setter para modificar el nombre principal del proyecto
     public void setNombreProyecto(String nombreProyecto) { 
-        if (nombreProyecto == null || nombreProyecto.isBlank()){ 
+        if (nombreProyecto == null || nombreProyecto.isEmpty()){ 
             throw new IllegalArgumentException("El nombre del proyecto no puede estar vacío");
         }
         this.nombreProyecto = nombreProyecto.trim(); 
@@ -50,10 +50,9 @@ class Emprendedor extends Usuario {
 
     // Método para agregar un nuevo proyecto a la lista
     public void agregarProyectos(String proyecto) {
-        if (proyecto == null || proyecto.isBlank()){ 
+        if (proyecto == null || proyecto.isEmpty()){ 
             throw new IllegalArgumentException("El proyecto no puede ser vacío o nulo");
         }
         this.proyectos.add(proyecto);
     }
 }
-
