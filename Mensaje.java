@@ -39,7 +39,7 @@ public class Mensaje {
     // Getter y Setter para el contenido del mensaje
     public String getContenido() { return contenido; }
     public void setContenido(String contenido) { 
-        if (contenido == null || contenido.isBlank() ){ 
+        if (contenido == null || contenido.isEmpty() ){ 
                 throw new IllegalArgumentException("El contenido es nulo o en blanco");
         }
         this.contenido = contenido; 
@@ -54,4 +54,3 @@ public class Mensaje {
         return cadena;
     }
 }
-
