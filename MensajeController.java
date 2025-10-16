@@ -20,7 +20,7 @@ public class MensajeController {
             throw new IllegalArgumentException("Inválido: emisor y receptor deben existir");
         }
         //validacion para que si exista el contenido del mensaje
-        if (mensaje.getContenido() == null || mensaje.getContenido().isBlank()) {
+        if (mensaje.getContenido() == null || mensaje.getContenido().isEmpty()) {
             throw new IllegalArgumentException("Mensaje inválido, por no tener contenido ");
         }
         mensajes.add(mensaje);
@@ -45,3 +45,4 @@ public class MensajeController {
         return new ArrayList<>(mensajes);
     }
 }
+
