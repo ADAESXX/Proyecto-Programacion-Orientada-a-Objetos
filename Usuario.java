@@ -33,7 +33,7 @@ public class Usuario {
     }
 
     public void setNombre(String nombre) {
-        if (nombre == null || nombre.isBlank()) {
+        if (nombre == null || nombre.isEmpty()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
         this.nombre = nombre.trim();
@@ -68,7 +68,7 @@ public class Usuario {
     }
 
     public void setUbicacion(String ubicacion) {
-        if (ubicacion == null || ubicacion.isBlank()) {
+        if (ubicacion == null || ubicacion.isEmpty()){
             throw new IllegalArgumentException("La ubicación no puede estar vacía");
         }
         this.ubicacion = ubicacion.trim();
@@ -105,3 +105,4 @@ public class Usuario {
                 '}';
     }
 }
+
