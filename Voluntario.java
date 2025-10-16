@@ -17,7 +17,7 @@ class Voluntario extends Usuario {
 
 //la lista de las Habililidades
     public void setHabilidades(String habilidades) {
-        if (habilidades == null || habilidades.isBlank()){ 
+        if (habilidades == null || habilidades.isEmpty()){ 
                 throw new IllegalArgumentException("No ingreso una habilidad válida");
         }
         this.habilidades.add(habilidades);
@@ -26,7 +26,7 @@ class Voluntario extends Usuario {
     public ArrayList<String> getApoyos() { return apoyos; }
 
     public void setApoyos(String apoyo) {
-        if (apoyo == null || apoyo.isBlank()){ 
+        if (apoyo == null || apoyo.isEmpty()){ 
                 throw new IllegalArgumentException("No existe el emisor");
         }
         //valida que no se duplique el apoyo
@@ -41,3 +41,4 @@ class Voluntario extends Usuario {
 }
 //agrege 2 listas que son las de las habilidades y de los apoyos, asi se tiene el conocimiento de que tan habil es el voluntario 
 //tambien agrege validaciones para poder evitar duplicados y tambien rescribi el metodo string para poder ver mejor la info 
+
