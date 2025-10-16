@@ -14,7 +14,7 @@ public class NotificacionController {
         if (receptor == null) {
             throw new IllegalArgumentException("Receptor no existente");
         }
-        if (mensaje == null || mensaje.isBlank()) {
+        if (mensaje == null || mensaje.isEmpty()) {
             throw new IllegalArgumentException("Mensaje inválido¿");
         }
         Notificaciones n = new Notificaciones(receptor, mensaje);
