@@ -13,7 +13,7 @@ public class Estudiante extends Usuario {
 
     // Acciones clave
     public void agregarPropuesta(String titulo) {
-        if (titulo == null || titulo.isBlank()) {
+        if (titulo == null || titulo.isEmpty()) {
             throw new IllegalArgumentException("título vacío, por lo que es inválido");
         }
         //el trim quita los espacios en blanco
@@ -23,7 +23,7 @@ public class Estudiante extends Usuario {
     // Getters/Setters
     public String getCarrera() { return carrera; }
     public void setCarrera(String carrera) { 
-        if (carrera == null || carrera.isBlank()) {
+        if (carrera == null || carrera.isEmpty()) {
             throw new IllegalArgumentException("Carrera vacía, por lo que es inválido");
         }
         this.carrera = carrera; 
