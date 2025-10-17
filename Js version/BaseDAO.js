@@ -1,4 +1,5 @@
 // models/dao/BaseDAO.js
+//programador:Jose Ignacio Guardado
 import mysql from "mysql2/promise";
 
 // conexión a la base de datos (ajusta los datos según tu entorno)
@@ -33,3 +34,4 @@ export default class BaseDAO {
     }
   }
 }
+
