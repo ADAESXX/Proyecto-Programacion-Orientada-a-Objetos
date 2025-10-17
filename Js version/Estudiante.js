@@ -1,4 +1,5 @@
 // models/Estudiante.js
+// programado: José Ignacio Guardado
 import Usuario from "./Usuario.js";
 
 export default class Estudiante extends Usuario {
@@ -14,3 +15,4 @@ export default class Estudiante extends Usuario {
   setCarrera(carrera) { this.carrera = carrera; }
   setUniversidad(universidad) { this.universidad = universidad; }
 }
+
