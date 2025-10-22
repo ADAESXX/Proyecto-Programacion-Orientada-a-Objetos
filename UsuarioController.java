@@ -1,50 +1,70 @@
-// Usuario.java
-public class UsuarioController {
-    private int id;
-    private String nombre;
-    private String correo;
-    private String ubicacion;
-    private String contrasena;
-    private boolean verificado;
-
-    // Constructor vacío
-    public UsuarioController() {}
-
-    // Constructor sin id (para registrar)
-    public UsuarioController(String nombre, String correo, String ubicacion, String contrasena, boolean verificado) {
-        this.nombre = nombre;
-        this.correo = correo;
-        this.ubicacion = ubicacion;
-        this.contrasena = contrasena;
-        this.verificado = verificado;
+class UsuarioController {
+  constructor(id, nombre, correo, ubicacion, contrasena, verificado) {
+    if (typeof id === "number") {
+      // Constructor con id (para obtener desde BD)
+      this.id = id;
+      this.nombre = nombre;
+      this.correo = correo;
+      this.ubicacion = ubicacion;
+      this.contrasena = contrasena;
+      this.verificado = verificado;
+    } else {
+      // Constructor sin id (para registrar)
+      this.id = 0;
+      this.nombre = id || "";
+      this.correo = nombre || "";
+      this.ubicacion = correo || "";
+      this.contrasena = ubicacion || "";
+      this.verificado = contrasena || false;
     }
+  }
 
-    // Constructor con id (para obtener desde BD)
-    public UsuarioController(int id, String nombre, String correo, String ubicacion, String contrasena, boolean verificado) {
-        this.id = id;
-        this.nombre = nombre;
-        this.correo = correo;
-        this.ubicacion = ubicacion;
-        this.contrasena = contrasena;
-        this.verificado = verificado;
-    }
+  // Getters y setters
+  getId() {
+    return this.id;
+  }
 
-    // Getters y setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+  setId(id) {
+    this.id = id;
+  }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+  getNombre() {
+    return this.nombre;
+  }
 
-    public String getCorreo() { return correo; }
-    public void setCorreo(String correo) { this.correo = correo; }
+  setNombre(nombre) {
+    this.nombre = nombre;
+  }
 
-    public String getUbicacion() { return ubicacion; }
-    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
+  getCorreo() {
+    return this.correo;
+  }
 
-    public String getContrasena() { return contrasena; }
-    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+  setCorreo(correo) {
+    this.correo = correo;
+  }
 
-    public boolean isVerificado() { return verificado; }
-    public void setVerificado(boolean verificado) { this.verificado = verificado; }
+  getUbicacion() {
+    return this.ubicacion;
+  }
+
+  setUbicacion(ubicacion) {
+    this.ubicacion = ubicacion;
+  }
+
+  getContrasena() {
+    return this.contrasena;
+  }
+
+  setContrasena(contrasena) {
+    this.contrasena = contrasena;
+  }
+
+  isVerificado() {
+    return this.verificado;
+  }
+
+  setVerificado(verificado) {
+    this.verificado = Boolean(verificado);
+  }
 }
