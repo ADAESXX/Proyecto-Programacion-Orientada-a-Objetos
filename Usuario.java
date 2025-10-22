@@ -1,107 +1,102 @@
-public class Usuario {
-    private String nombre;
-    private String correo;
-    private String contrasena;
-    private String ubicacion;
-    private boolean verificado;
-
-    public Usuario() {
+class Usuario {
+  constructor(nombre, correo, contrasena, ubicacion) {
+    if (nombre !== undefined && correo !== undefined && contrasena !== undefined && ubicacion !== undefined) {
+      this.setNombre(nombre);
+      this.setCorreo(correo);
+      this.setContrasena(contrasena);
+      this.setUbicacion(ubicacion);
+      this.verificado = false;
+    } else {
+      this.nombre = "";
+      this.correo = "";
+      this.contrasena = "";
+      this.ubicacion = "";
+      this.verificado = false;
     }
+  }
 
-    public Usuario(String nombre, String correo, String contrasena, String ubicacion) {
-        setNombre(nombre);
-        setCorreo(correo);
-        setContrasena(contrasena);
-        setUbicacion(ubicacion);
-        this.verificado = false;
-    }
+  verificarCuenta() {
+    this.verificado = true;
+  }
 
-    public void verificarCuenta() {
-        this.verificado = true;
-    }
+  actualizarPerfil(nuevoNombre, nuevaUbicacion, nuevaContrasena, nuevoCorreo) {
+    this.setNombre(nuevoNombre);
+    this.setCorreo(nuevoCorreo);
+    this.setContrasena(nuevaContrasena);
+    this.setUbicacion(nuevaUbicacion);
+  }
 
-    public void actualizarPerfil(String nuevoNombre, String nuevaUbicacion,
-                                 String nuevaContrasena, String nuevoCorreo) {
-        setNombre(nuevoNombre);
-        setCorreo(nuevoCorreo);
-        setContrasena(nuevaContrasena);
-        setUbicacion(nuevaUbicacion);
-    }
+  getNombre() {
+    return this.nombre;
+  }
 
-    public String getNombre() {
-        return nombre;
+  setNombre(nombre) {
+    if (!nombre || nombre.trim() === "") {
+      throw new Error("El nombre no puede estar vacío");
     }
+    this.nombre = nombre.trim();
+  }
 
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.isBlank()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío");
-        }
-        this.nombre = nombre.trim();
-    }
+  getCorreo() {
+    return this.correo;
+  }
 
-    public String getCorreo() {
-        return correo;
+  setCorreo(correo) {
+    const regex = /^[\w._%+-]+@[\w.-]+\.[a-zA-Z]{2,6}$/;
+    if (!correo || !regex.test(correo)) {
+      throw new Error("Correo inválido");
     }
+    this.correo = correo.trim().toLowerCase();
+  }
 
-    public void setCorreo(String correo) {
-        if (correo == null ||
-                !correo.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
-            throw new IllegalArgumentException("Correo inválido");
-        }
-        this.correo = correo.trim().toLowerCase();
-    }
+  getContrasena() {
+    return this.contrasena;
+  }
 
-    public String getContrasena() {
-        return contrasena;
+  setContrasena(contrasena) {
+    if (!contrasena || contrasena.trim().length < 6) {
+      throw new Error("La contraseña debe tener al menos 6 caracteres");
     }
+    this.contrasena = contrasena.trim();
+  }
 
-    public void setContrasena(String contrasena) {
-        if (contrasena == null || contrasena.trim().length() < 6) {
-            throw new IllegalArgumentException(
-                    "La contraseña debe tener al menos 6 caracteres");
-        }
-        this.contrasena = contrasena.trim();
-    }
+  getUbicacion() {
+    return this.ubicacion;
+  }
 
-    public String getUbicacion() {
-        return ubicacion;
+  setUbicacion(ubicacion) {
+    if (!ubicacion || ubicacion.trim() === "") {
+      throw new Error("La ubicación no puede estar vacía");
     }
+    this.ubicacion = ubicacion.trim();
+  }
 
-    public void setUbicacion(String ubicacion) {
-        if (ubicacion == null || ubicacion.isBlank()) {
-            throw new IllegalArgumentException("La ubicación no puede estar vacía");
-        }
-        this.ubicacion = ubicacion.trim();
-    }
+  getVerificado() {
+    return this.verificado;
+  }
 
-    public boolean getVerificado() {
-        return verificado;
-    }
+  setVerificado(verificado) {
+    this.verificado = Boolean(verificado);
+  }
 
-    public void setVerificado(boolean verificado) {
-        this.verificado = verificado;
-    }
+  equals(obj) {
+    if (this === obj) return true;
+    if (!obj || !(obj instanceof Usuario)) return false;
+    return this.correo === obj.correo;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Usuario usuario = (Usuario) obj;
-        return correo != null ? correo.equals(usuario.correo) : usuario.correo == null;
+  hashCode() {
+    // Implementación simple de hash basada en el correo (no nativa de JS)
+    if (!this.correo) return 0;
+    let hash = 0;
+    for (let i = 0; i < this.correo.length; i++) {
+      hash = (hash << 5) - hash + this.correo.charCodeAt(i);
+      hash |= 0; // a 32-bit integer
     }
+    return hash;
+  }
 
-    @Override
-    public int hashCode() {
-        return correo != null ? correo.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "nombre='" + nombre + '\'' +
-                ", correo='" + correo + '\'' +
-                ", ubicacion='" + ubicacion + '\'' +
-                ", verificado=" + verificado +
-                '}';
-    }
+  toString() {
+    return `Usuario{nombre='${this.nombre}', correo='${this.correo}', ubicacion='${this.ubicacion}', verificado=${this.verificado}}`;
+  }
 }
