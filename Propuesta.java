@@ -1,131 +1,124 @@
-import java.util.ArrayList;
+class Propuesta {
+  constructor(titulo, descripcion, creador) {
+    this.setTitulo(titulo);
+    this.setDescripcion(descripcion);
+    this.setCreador(creador);
+    this.progreso = 0;     // 0 a 100
+    this.meta = 0.0;       // meta de dinero
+    this.recaudado = 0.0;  // dinero recaudado
 
-public class Propuesta {
-    private String titulo;
-    private String descripcion;
-    private Usuario creador;
-    private float progreso;
-    private double meta;          // NUEVO: meta de dinero
-    private double recaudado;     // NUEVO: dinero recaudado
-    private final ArrayList<Inversionista> inversionistas = new ArrayList<>();
-    private final ArrayList<Donante> donantes = new ArrayList<>();
-    private final ArrayList<Voluntario> voluntarios = new ArrayList<>();
+    this.inversionistas = [];
+    this.donantes = [];
+    this.voluntarios = [];
+  }
 
-    public Propuesta(String titulo, String descripcion, Usuario creador) {
-        setTitulo(titulo);
-        setDescripcion(descripcion);
-        setCreador(creador);
-        this.progreso = 0f;
-        this.meta = 0.0;         // NUEVO
-        this.recaudado = 0.0;    // NUEVO
+  // --- Métodos existentes ---
+  getTitulo() {
+    return this.titulo;
+  }
+
+  setTitulo(titulo) {
+    if (!titulo || typeof titulo !== "string" || titulo.trim() === "") {
+      throw new Error("Título vacío o nulo, por lo que es inválido");
     }
+    this.titulo = titulo.trim();
+  }
 
-    //métodos existentes
-    public String getTitulo() {
-        return titulo;
+  getDescripcion() {
+    return this.descripcion;
+  }
+
+  setDescripcion(descripcion) {
+    if (!descripcion || typeof descripcion !== "string" || descripcion.trim() === "") {
+      throw new Error("Descripción vacía o nula, por lo que inválido");
     }
+    this.descripcion = descripcion.trim();
+  }
 
-    public void setTitulo(String titulo) {
-        if (titulo == null || titulo.isBlank()){
-            throw new IllegalArgumentException("Título vacío o nulo, por lo que es inválido");
-        }
-        this.titulo = titulo;
+  getCreador() {
+    return this.creador;
+  }
+
+  setCreador(creador) {
+    if (!creador) {
+      throw new Error("No existe el creador");
     }
+    this.creador = creador;
+  }
 
-    public String getDescripcion() {
-        return descripcion;
+  getProgreso() {
+    return this.progreso;
+  }
+
+  setProgreso(progreso) {
+    if (typeof progreso !== "number" || progreso < 0 || progreso > 100) {
+      throw new Error("El progreso debe de estar entre 0 y 100");
     }
+    this.progreso = progreso;
+  }
 
-    public void setDescripcion(String descripcion) {
-        if (descripcion == null || descripcion.isBlank()){
-            throw new IllegalArgumentException("Descripción vacía o nula, por lo que inválido");
-        }
-        this.descripcion = descripcion;
+  // --- NUEVOS MÉTODOS: meta y recaudación ---
+  getMeta() {
+    return this.meta;
+  }
+
+  setMeta(meta) {
+    if (typeof meta !== "number" || meta <= 0) {
+      throw new Error("La meta debe ser mayor a 0");
     }
+    this.meta = meta;
+  }
 
-    public Usuario getCreador() {
-        return creador;
+  getRecaudado() {
+    return this.recaudado;
+  }
+
+  agregarRecaudacion(cantidad) {
+    if (typeof cantidad !== "number" || cantidad <= 0) {
+      throw new Error("La cantidad debe ser mayor a 0");
     }
+    this.recaudado += cantidad;
+  }
 
-    public void setCreador(Usuario creador) {
-        if (creador == null){
-            throw new IllegalArgumentException("No existe el creador");
-        }
-        this.creador = creador;
+  // --- Colecciones ---
+  getInversionistas() {
+    return this.inversionistas;
+  }
+
+  setInversionistas(inver) {
+    if (!inver) {
+      throw new Error("Inversionista inválido");
     }
+    this.inversionistas.push(inver);
+  }
 
-    public float getProgreso() {
-        return progreso;
+  getDonantes() {
+    return this.donantes;
+  }
+
+  setDonantes(donan) {
+    if (!donan) {
+      throw new Error("Donante inválido");
     }
+    this.donantes.push(donan);
+  }
 
-    public void setProgreso(float progreso) {
-        if (progreso < 0 || progreso > 100){
-            throw new IllegalArgumentException("El progreso debe de estar entre 0 y 100");
-        }
-        this.progreso = progreso;
+  getVoluntarios() {
+    return this.voluntarios;
+  }
+
+  setVoluntarios(volun) {
+    if (!volun) {
+      throw new Error("Voluntario inválido");
     }
+    this.voluntarios.push(volun);
+  }
 
-    // NUEVOS MÉTODOS para meta y recaudación
-    public double getMeta() {
-        return meta;
-    }
+  toString() {
+    const correoCreador = (this.creador && typeof this.creador.getCorreo === "function")
+      ? this.creador.getCorreo()
+      : (this.creador && this.creador.correo) ? this.creador.correo : "N/A";
 
-    public void setMeta(double meta) {
-        if (meta <= 0) {
-            throw new IllegalArgumentException("La meta debe ser mayor a 0");
-        }
-        this.meta = meta;
-    }
-
-    public double getRecaudado() {
-        return recaudado;
-    }
-
-    public void agregarRecaudacion(double cantidad) {
-        if (cantidad <= 0) {
-            throw new IllegalArgumentException("La cantidad debe ser mayor a 0");
-        }
-        this.recaudado += cantidad;
-    }
-
-    // Métodos existentes
-    public ArrayList<Inversionista> getInversionistas() {
-        return inversionistas;
-    }
-
-    public void setInversionistas(Inversionista inver) {
-        if (inver == null ){
-            throw new IllegalArgumentException("Inversionista inválido");
-        }
-        inversionistas.add(inver);
-    }
-
-    public ArrayList<Donante> getDonantes() {
-        return donantes;
-    }
-
-    public void setDonantes(Donante donan) {
-        if (donan == null ){
-            throw new IllegalArgumentException("Donante inválido");
-        }
-        donantes.add(donan);
-    }
-
-    public ArrayList<Voluntario> getVoluntarios() {
-        return voluntarios;
-    }
-
-    public void setVoluntarios(Voluntario volun) {
-        if (volun == null ){
-            throw new IllegalArgumentException("Voluntario inválido");
-        }
-        voluntarios.add(volun);
-    }
-
-    public String toString() {
-        return "Propuesta{" +
-                "titulo='" + titulo + '\'' +
-                ", progreso=" + progreso + "%, creador=" + creador.getCorreo() +
-                ", meta=$" + meta + ", recaudado=$" + recaudado + '}';
+    return `Propuesta{titulo='${this.titulo}', progreso=${this.progreso}%, creador=${correoCreador}, meta=$${this.meta}, recaudado=$${this.recaudado}}`;
     }
 }
