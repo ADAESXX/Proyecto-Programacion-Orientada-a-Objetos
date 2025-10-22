@@ -1,42 +1,46 @@
-//clase revisada - validaciones completas
-import java.util.*;
-//el extends permite que se hereden atributos y/o métodos de la clase Uusuario
-public class Estudiante extends Usuario {
-    private String carrera;
+// clase revisada - validaciones completas
+// el extends permite que se hereden atributos y/o métodos de la clase Usuario
+class Estudiante extends Usuario {
+  constructor(nombre, correo, contrasena, ubicacion, carrera) {
+    super(nombre, correo, contrasena, ubicacion);
+    this.setCarrera(carrera);
     // En Fase 2 “propuestas” aparece como String; lo manejamos como lista de títulos para ser útil.
-    private ArrayList<String> propuestas = new ArrayList<>();
+    this.propuestas = [];
+  }
 
-    public Estudiante(String nombre, String correo, String contrasena, String ubicacion, String carrera) {
-        super(nombre, correo, contrasena, ubicacion);
-        this.carrera=carrera;
+  // Acciones clave
+  agregarPropuesta(titulo) {
+    if (!titulo || titulo.trim() === "") {
+      throw new Error("título vacío, por lo que es inválido");
     }
+    // el trim quita los espacios en blanco
+    this.propuestas.push(titulo.trim());
+  }
 
-    // Acciones clave
-    public void agregarPropuesta(String titulo) {
-        if (titulo == null || titulo.isBlank()) {
-            throw new IllegalArgumentException("título vacío, por lo que es inválido");
-        }
-        //el trim quita los espacios en blanco
-        propuestas.add(titulo.trim());
-    }
+  // Getters/Setters
+  getCarrera() {
+    return this.carrera;
+  }
 
-    // Getters/Setters
-    public String getCarrera() { return carrera; }
-    public void setCarrera(String carrera) { 
-        if (carrera == null || carrera.isBlank()) {
-            throw new IllegalArgumentException("Carrera vacía, por lo que es inválido");
-        }
-        this.carrera = carrera; 
+  setCarrera(carrera) {
+    if (!carrera || carrera.trim() === "") {
+      throw new Error("Carrera vacía, por lo que es inválido");
     }
+    this.carrera = carrera.trim();
+  }
 
-    // Compatibles con “setPropuestas / getPropuestas” de la fase
-    public ArrayList<String> getPropuestas() { return propuestas; }
-    public void setPropuestas(ArrayList<String> nuevas) {
-        if (nuevas == null) {
-            throw new IllegalArgumentException("La lista propuesta no puede ser nula");
-        }
-        propuestas.clear();
-        propuestas.addAll(nuevas);
+  // Compatibles con “setPropuestas / getPropuestas” de la fase
+  getPropuestas() {
+    return this.propuestas;
+  }
+
+  setPropuestas(nuevas) {
+    if (nuevas == null) {
+      throw new Error("La lista propuesta no puede ser nula");
     }
+    if (!Array.isArray(nuevas)) {
+      throw new Error("Las propuestas deben ser un arreglo");
+    }
+    this.propuestas = [...nuevas];
+  }
 }
-
