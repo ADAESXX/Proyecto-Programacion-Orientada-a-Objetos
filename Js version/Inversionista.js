@@ -1,17 +1,28 @@
-// models/Inversionista.js
-// Programador: José Ignacio Guardado 
-import Usuario from "./Usuario.js";
+//clase revisada - validaciones completadas
 
-export default class Inversionista extends Usuario {
-  constructor(id, nombre, correo, contrasena, empresa, capitalDisponible) {
-    super(id, nombre, correo, contrasena, "Inversionista");
-    this.empresa = empresa;
-    this.capitalDisponible = capitalDisponible;
-  }
+class Inversionista extends Usuario {
+    
+    // Lista que contiene las inversiones realizadas por el inversionista
+    constructor(nombre, correo, contrasena, ubicacion) {
+        // Llamada al constructor de la clase padre (Usuario) para inicializar los atributos heredados
+        super(nombre, correo, contrasena, ubicacion);
+        
+        // Inicializa la lista de inversiones como vacía
+        this.inversiones = [];
+    }
 
-  getEmpresa() { return this.empresa; }
-  getCapitalDisponible() { return this.capitalDisponible; }
+    // Método para registrar una nueva inversión en la lista
+    setInvertir(inversion) {
+        if (inversion == null || inversion.trim() === "") { 
+            throw new Error("La inversión es inválida");
+        }
+        this.inversiones.push(inversion.trim());
+    }
 
-  setEmpresa(empresa) { this.empresa = empresa; }
-  setCapitalDisponible(capitalDisponible) { this.capitalDisponible = capitalDisponible; }
+    // Otro getter que devuelve la lista de inversiones (funciona igual que getInversiones)
+    getInvertir() { 
+        return this.inversiones; 
+    }
+
 }
+
