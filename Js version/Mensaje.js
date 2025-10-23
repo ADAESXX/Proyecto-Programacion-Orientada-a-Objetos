@@ -1,20 +1,50 @@
-// models/Mensaje.js
-export default class Mensaje {
-  constructor(id, remitente, destinatario, contenido, fecha = new Date()) {
-    this.id = id;
-    this.remitente = remitente;
-    this.destinatario = destinatario;
-    this.contenido = contenido;
-    this.fecha = fecha;
-  }
+//clase revisada - validaciones completas
 
-  getId() { return this.id; }
-  getRemitente() { return this.remitente; }
-  getDestinatario() { return this.destinatario; }
-  getContenido() { return this.contenido; }
-  getFecha() { return this.fecha; }
+class Mensaje {
+    
+    // Usuario que envía el mensaje
+    // Usuario que recibe el mensaje
+    // Contenido del mensaje (texto enviado)
+    constructor(emisor, receptor, contenido) {
+        this.setEmisor(emisor);
+        this.setReceptor(receptor);
+        this.setContenido(contenido);
+    }
 
-  setRemitente(r) { this.remitente = r; }
-  setDestinatario(d) { this.destinatario = d; }
-  setContenido(c) { this.contenido = c; }
+    // Getter y Setter para el emisor
+    getEmisor() { return this.emisor; }
+    setEmisor(emisor) { 
+        if (emisor == null) { 
+            throw new Error("No existe el emisor");
+        }
+        this.emisor = emisor; 
+    }
+
+    // Getter y Setter para el receptor
+    getReceptor() { return this.receptor; }
+    setReceptor(receptor) { 
+        if (receptor == null) { 
+            throw new Error("No existe el receptor");
+        }
+        this.receptor = receptor; 
+    }
+
+    // Getter y Setter para el contenido del mensaje
+    getContenido() { return this.contenido; }
+    setContenido(contenido) { 
+        if (contenido == null || contenido.trim() === "") { 
+            throw new Error("El contenido es nulo o en blanco");
+        }
+        this.contenido = contenido; 
+    }
+
+    // Método que simula el envío del mensaje mostrando un texto en consola
+    enviar() {
+        let cadena = 
+            "Mensaje enviado de " + this.emisor.getNombre() + 
+            " a " + this.receptor.getNombre() + 
+            ": " + this.contenido;
+        return cadena;
+    }
 }
+```
