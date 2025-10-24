@@ -1,24 +1,64 @@
- import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import mysql from 'mysql2/promise';
 
-public class ConexionBD {
-    private static final String URL = "jdbc:mysql://localhost:3306/plataforma_apoyo";
-    private static final String USER = "plataforma_user";
-    private static final String PASSWORD = "miclave123";
+class ConexionBD {
+    // Datos de conexión (ajusta según tu configuración)
+    static #URL = 'localhost';
+    static #PORT = 3306;
+    static #DATABASE = 'plataforma_apoyo';
+    static #USER = 'root';
+    static #PASSWORD = 'MyNewPass1';
 
-    private static Connection conn = null;
+    // Objeto conexión
+    static #conn = null;
 
-    // Conectar
-    public static Connection getConnection() {
-        if (conn == null) {
+    // Obtener conexión
+    static async getConnection() {
+        if (this.#conn === null) {
             try {
-                conn = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("✅ Conectado a la base de datos.");
-            } catch (SQLException e) {
-                System.out.println("❌ Error de conexión: " + e.getMessage());
+                this.#conn = await mysql.createConnection({
+                    host: this.#URL,
+                    port: this.#PORT,
+                    database: this.#DATABASE,
+                    user: this.#USER,
+                    password: this.#PASSWORD,
+                    charset: 'utf8mb4'
+                });
+                console.log('Conectado a la base de datos.');
+            } catch (error) {
+                console.error('Error de conexión:', error.message);
+                return null;
             }
         }
-        return conn;
+        return this.#conn;
+    }
+
+    // Probar conexión
+    static async probarConexion() {
+        try {
+            const connection = await this.getConnection();
+            if (connection) {
+                await connection.ping();
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error al verificar el estado de la conexión:', error.message);
+            return false;
+        }
+    }
+
+    // Cerrar conexión
+    static async cerrarConexion() {
+        try {
+            if (this.#conn !== null) {
+                await this.#conn.end();
+                this.#conn = null;
+                console.log('Conexión cerrada correctamente.');
+            }
+        } catch (error) {
+            console.error('Error al cerrar la conexión:', error.message);
+        }
     }
 }
+
+export default ConexionBD;
