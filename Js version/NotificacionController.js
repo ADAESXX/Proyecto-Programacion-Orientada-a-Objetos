@@ -1,4 +1,3 @@
-// Clase revisada - validaciones completas
 // Programador: José Ignacio Guardado Larios
 // Archivo: NotificacionController.js
 
@@ -85,3 +84,4 @@ class NotificacionController {
 }
 
 export default NotificacionController;
+
