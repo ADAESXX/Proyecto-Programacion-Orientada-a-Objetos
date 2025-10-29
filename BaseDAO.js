@@ -1,3 +1,10 @@
+/*
+------------------------------------------------------------
+Autor(a)            : Raquel Pamela Tejada Vega
+Carnet              : 25469
+Clase               : Programación Orientada a Objetos (POO)
+------------------------------------------------------------
+*/
 import ConexionBD from './ConexionBD.js';
 
 class BaseDAO {
