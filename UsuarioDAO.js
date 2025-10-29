@@ -1,3 +1,10 @@
+/*
+------------------------------------------------------------
+Autor(a)            : Raquel Pamela Tejada Vega
+Carnet              : 25469
+Clase               : Programación Orientada a Objetos (POO)
+------------------------------------------------------------
+*/
 import BaseDAO from './BaseDAO.js';
 import Usuario from './models/Usuario.js';
 
