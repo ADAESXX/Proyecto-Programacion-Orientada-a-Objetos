@@ -1,3 +1,10 @@
+/*
+------------------------------------------------------------
+Autor(a)            : Raquel Pamela Tejada Vega
+Carnet              : 25469
+Clase               : Programación Orientada a Objetos (POO)
+------------------------------------------------------------
+*/
 import mysql from 'mysql2/promise';
 
 class ConexionBD {
@@ -62,3 +69,4 @@ class ConexionBD {
 }
 
 export default ConexionBD;
+
