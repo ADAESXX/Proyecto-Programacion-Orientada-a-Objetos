@@ -3,6 +3,7 @@
 Autor(a)            : Raquel Pamela Tejada Vega
 Carnet              : 25469
 Clase               : Programación Orientada a Objetos (POO)
+Fecha               : 23/10/2025
 ------------------------------------------------------------
 */
 import BaseDAO from './BaseDAO.js';
