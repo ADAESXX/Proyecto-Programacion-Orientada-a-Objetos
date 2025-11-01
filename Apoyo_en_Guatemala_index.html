@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Apoyo en Guatemala — Tu beca, tu capital, tu futuro...</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#0f1724;
+      --muted:#9aa4b2;
+      --accent1:#06b6d4;
+      --accent2:#34d399;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+      --accent-glow: 0 8px 30px rgba(6,182,212,0.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Poppins',system-ui,Segoe UI,Roboto,-apple-system,"Helvetica Neue";background:linear-gradient(180deg,var(--bg),#07101a);color:#e6eef6;min-height:100vh}
+    header{display:flex;align-items:center;justify-content:space-between;padding:22px 28px;border-bottom:1px solid rgba(255,255,255,0.03);backdrop-filter: blur(6px);}
+    .brand{display:flex;flex-direction:column;gap:4px}
+    .brand h1{margin:0;font-size:20px;letter-spacing:0.2px}
+    .brand p{margin:0;color:var(--muted);font-size:13px}
+    .controls{display:flex;gap:10px;align-items:center}
+    input,select,textarea,button{font-family:inherit}
+    .search input{background:var(--glass);border:1px solid rgba(255,255,255,0.04);padding:10px 12px;border-radius:10px;color:var(--muted);width:240px}
+    .btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer}
+    .btn-primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#042027;box-shadow:var(--accent-glow);font-weight:600}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+    main{max-width:1100px;margin:26px auto;padding:0 20px}
+    .top-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid rgba(255,255,255,0.03)}
+    .hero{display:flex;gap:14px;align-items:center}
+    .hero .title{font-size:20px;font-weight:700}
+    .hero .tag{color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:18px}
+    .card{background:var(--card);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow: 0 6px 22px rgba(2,6,23,0.6);}
+    .project .title{font-weight:700;margin:0}
+    .project .short{color:var(--muted);font-size:13px;margin:6px 0}
+    .progress{height:10px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;margin-top:10px}
+    .bar{height:100%;background:linear-gradient(90deg,var(--accent1),var(--accent2));width:30%}
+    .meta{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:10px;color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:8px;margin-top:12px}
+    details{margin-top:10px;color:var(--muted)}
+    .small{font-size:13px;color:var(--muted)}
+    /* Modal */
+    .modal-root{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(rgba(2,6,23,0.6),rgba(2,6,23,0.6));z-index:60}
+    .modal-root.show{display:flex}
+    .modal{width:100%;max-width:680px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .form-row{display:flex;gap:8px;margin-top:10px}
+    .form-row input,.form-row textarea,.form-row select{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);min-width:0}
+    textarea{min-height:90px;resize:vertical}
+    footer{max-width:1100px;margin:24px auto;padding:0 20px;color:var(--muted);font-size:13px;text-align:center}
+    /* responsive */
+    @media (max-width:720px){ .search input{width:140px} .hero{flex-direction:column;align-items:flex-start} header{padding:14px} main{margin-top:14px} }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>Apoyo en Guatemala</h1>
+      <p>Tu beca, tu capital, tu futuro... en un solo lugar.</p>
+    </div>
+    <div class="controls">
+      <div class="search"><input id="search" placeholder="Buscar proyectos..." /></div>
+      <div id="auth-area"></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="top-card">
+      <div class="hero">
+        <div>
+          <div class="title">Proyectos destacados</div>
+          <div class="tag small">Explora, dona o participa como voluntario</div>
+        </div>
+      </div>
+      <div class="small">Demo local • Guardado en tu navegador</div>
+    </div>
+
+    <section id="controls" style="margin-top:12px;display:flex;justify-content:space-between;gap:12px;align-items:center">
+      <div>
+        <button id="btn-add" class="btn btn-primary">Agregar proyecto</button>
+      </div>
+      <div class="small">Roles: Emprendedor/Estudiante, Inversionista, Voluntario</div>
+    </section>
+
+    <section id="projects" class="grid" style="margin-top:12px"></section>
+
+    <template id="project-tpl">
+      <div class="card project">
+        <h3 class="title"></h3>
+        <div class="short"></div>
+        <div class="progress"><div class="bar"></div></div>
+        <div class="meta"><div class="left"></div><div class="right"></div></div>
+        <div class="actions"></div>
+        <details>
+          <summary>Ver más</summary>
+          <div style="margin-top:8px" class="description"></div>
+          <div style="margin-top:8px" class="volunteers"></div>
+          <div style="margin-top:8px" class="comments"></div>
+        </details>
+      </div>
+    </template>
+
+    <div id="modal-root" class="modal-root"></div>
+  </main>
+
+  <footer>Apoyo en Guatemala — construido con ❤️ • Versión demo (local)</footer>
+
+<script>
+/* Single-file app - localStorage POC */
+/* Data keys */
+const LS_KEYS = { USERS:'ks_users', PROJECTS:'ks_projects', DONATIONS:'ks_donations', COMMENTS:'ks_comments', SESSION:'ks_session' };
+
+// Simple DB helpers
+const DB = {
+  load(key, fallback){ try{ const raw = localStorage.getItem(key); return raw?JSON.parse(raw):fallback; }catch(e){return fallback} },
+  save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+};
+
+// Seed initial data if empty
+function seed(){
+  if(!DB.load(LS_KEYS.USERS, null)){
+    DB.save(LS_KEYS.USERS, [
+      {id:1,nombre:'Emprendedor Demo',correo:'emprendedor@demo.com',contrasena:'1234',tipoUsuario:'emprendedor'},
+      {id:2,nombre:'Inversionista Demo',correo:'inversionista@demo.com',contrasena:'1234',tipoUsuario:'inversionista'},
+      {id:3,nombre:'Voluntario Demo',correo:'voluntario@demo.com',contrasena:'1234',tipoUsuario:'voluntario'},
+    ]);
+  }
+  if(!DB.load(LS_KEYS.PROJECTS, null)){
+    DB.save(LS_KEYS.PROJECTS, [
+      {id:1,titulo:'Huerto Solar Comunitario',short:'Huerto urbano con paneles solares',descripcion:'Crear un huerto comunitario en la zona urbana aprovechando energía solar y capacitación local.',montoSolicitado:5000,collected:1200,creadorId:1,voluntarios:[],inversionistas:[]},
+      {id:2,titulo:'App Educativa Rural',short:'Plataforma móvil para educación',descripcion:'Desarrollar una app con contenidos educativos para zonas rurales con acceso offline.',montoSolicitado:8000,collected:3400,creadorId:1,voluntarios:[],inversionistas:[]},
+      {id:3,titulo:'Capacitación Técnica para Jóvenes',short:'Cursos prácticos de oficios',descripcion:'Programas de formación técnica y práctica para jóvenes emprendedores y estudiantes.',montoSolicitado:3000,collected:600,creadorId:1,voluntarios:[],inversionistas:[]},
+    ]);
+  }
+  if(!DB.load(LS_KEYS.DONATIONS, null)) DB.save(LS_KEYS.DONATIONS, []);
+  if(!DB.load(LS_KEYS.COMMENTS, null)) DB.save(LS_KEYS.COMMENTS, []);
+}
+seed();
+
+/* App state */
+let filter = '';
+let session = DB.load(LS_KEYS.SESSION, null);
+
+/* UI refs */
+const authArea = document.getElementById('auth-area');
+const projectsRoot = document.getElementById('projects');
+const tpl = document.getElementById('project-tpl');
+const modalRoot = document.getElementById('modal-root');
+const searchInput = document.getElementById('search');
+const btnAdd = document.getElementById('btn-add');
+
+/* Helpers */
+function fmtCurrency(n){ return '$' + Number(n).toLocaleString(); }
+function curTime(){ return new Date().toISOString(); }
+function uid(){ return Date.now() + Math.floor(Math.random()*999); }
+
+/* Render auth area */
+function renderAuth(){
+  authArea.innerHTML = '';
+  if(session){
+    const box = document.createElement('div'); box.style.display='flex'; box.style.gap='8px'; box.style.alignItems='center';
+    const span = document.createElement('span'); span.textContent = session.nombre + ' (' + session.tipoUsuario + ')'; span.className='small';
+    const logout = document.createElement('button'); logout.textContent='Salir'; logout.className='btn btn-ghost';
+    logout.onclick = ()=>{ localStorage.removeItem(LS_KEYS.SESSION); session=null; renderAuth(); renderProjects(); };
+    box.appendChild(span); box.appendChild(logout); authArea.appendChild(box);
+  } else {
+    const btn = document.createElement('button'); btn.textContent='Login / Register'; btn.className='btn btn-primary';
+    btn.onclick = openAuthModal; authArea.appendChild(btn);
+  }
+}
+
+/* Render projects */
+function renderProjects(){
+  projectsRoot.innerHTML='';
+  const projects = DB.load(LS_KEYS.PROJECTS, []);
+  const comments = DB.load(LS_KEYS.COMMENTS, []);
+  const filtered = projects.filter(p => {
+    if(!filter) return true;
+    const q = filter.toLowerCase();
+    return (p.titulo && p.titulo.toLowerCase().includes(q)) || (p.short && p.short.toLowerCase().includes(q)) || (p.descripcion && p.descripcion.toLowerCase().includes(q));
+  });
+  filtered.forEach(p=>{
+    const el = tpl.content.cloneNode(true);
+    el.querySelector('.title').textContent = p.titulo;
+    el.querySelector('.short').textContent = p.short || '';
+    const percent = Math.min(100, Math.round((p.collected||0)/(p.montoSolicitado||1)*100));
+    el.querySelector('.bar').style.width = percent + '%';
+    el.querySelector('.left').textContent = fmtCurrency(p.collected || 0) + ' recaudado';
+    el.querySelector('.right').textContent = percent + '% de ' + fmtCurrency(p.montoSolicitado || 0);
+    el.querySelector('.description').textContent = p.descripcion || '';
+    const volDiv = el.querySelector('.volunteers');
+    volDiv.innerHTML = '<strong>Voluntarios:</strong>';
+    const ulv = document.createElement('ul');
+    (p.voluntarios||[]).forEach(v=>{ const li=document.createElement('li'); li.textContent=v; ulv.appendChild(li); });
+    volDiv.appendChild(ulv);
+    const commDiv = el.querySelector('.comments');
+    commDiv.innerHTML = '<strong>Comentarios:</strong>';
+    const ulc = document.createElement('ul');
+    comments.filter(c=>c.proyectoId===p.id).forEach(c=>{ const li=document.createElement('li'); li.textContent=c.text; ulc.appendChild(li); });
+    commDiv.appendChild(ulc);
+    const actions = el.querySelector('.actions');
+    const donate = document.createElement('button'); donate.textContent='Donar'; donate.className='btn btn-primary';
+    donate.onclick = ()=> openDonateModal(p);
+    actions.appendChild(donate);
+    if(session && session.tipoUsuario === 'inversionista'){
+      const cbtn = document.createElement('button'); cbtn.textContent='Comentar'; cbtn.className='btn btn-ghost';
+      cbtn.onclick = ()=> openCommentModal(p);
+      actions.appendChild(cbtn);
+    }
+    projectsRoot.appendChild(el);
+  });
+}
+
+/* Search */
+searchInput.addEventListener('input', (e)=>{ filter = e.target.value; renderProjects(); });
+
+/* Add project button */
+btnAdd.addEventListener('click', ()=>{
+  if(!session) return alert('Debes iniciar sesión para crear proyectos');
+  openAddModal();
+});
+
+/* Modals */
+function openModal(html){
+  modalRoot.innerHTML = '';
+  modalRoot.classList.add('show');
+  const wrap = document.createElement('div'); wrap.className='modal';
+  wrap.innerHTML = html;
+  modalRoot.appendChild(wrap);
+  return {root:modalRoot, panel:wrap, close: ()=>{ modalRoot.classList.remove('show'); modalRoot.innerHTML=''; }};
+}
+
+/* Auth modal */
+function openAuthModal(){
+  const html = `
+    <h3>Login / Register</h3>
+    <div class="form-row"><input id="mi-email" placeholder="Email"></div>
+    <div class="form-row"><input id="mi-pass" placeholder="Password" type="password"></div>
+    <div class="form-row"><input id="mi-name" placeholder="Nombre (para registrar)"></div>
+    <div class="form-row"><select id="mi-role"><option value="emprendedor">Emprendedor/Estudiante</option><option value="inversionista">Inversionista</option><option value="voluntario">Voluntario</option></select></div>
+    <div class="form-row"><button id="mi-login" class="btn btn-primary">Login</button><button id="mi-register" class="btn btn-ghost">Register</button></div>
+  `;
+  const m = openModal(html);
+  m.panel.querySelector('#mi-register').onclick = ()=>{
+    const email = m.panel.querySelector('#mi-email').value.trim();
+    const pass = m.panel.querySelector('#mi-pass').value.trim();
+    const name = m.panel.querySelector('#mi-name').value.trim() || email.split('@')[0];
+    const role = m.panel.querySelector('#mi-role').value;
+    if(!email||!pass) return alert('Email y contraseña requeridos');
+    const users = DB.load(LS_KEYS.USERS, []);
+    if(users.find(u=>u.correo===email)) return alert('Email ya registrado');
+    const id = uid();
+    users.push({id,nombre:name,correo:email,contrasena:pass,tipoUsuario:role});
+    DB.save(LS_KEYS.USERS, users);
+    session = {id,nombre:name,correo:email,tipoUsuario:role};
+    DB.save(LS_KEYS.SESSION, session);
+    m.close();
+    renderAuth(); renderProjects();
+  };
+  m.panel.querySelector('#mi-login').onclick = ()=>{
+    const email = m.panel.querySelector('#mi-email').value.trim();
+    const pass = m.panel.querySelector('#mi-pass').value.trim();
+    const users = DB.load(LS_KEYS.USERS, []);
+    const u = users.find(x=>x.correo===email && x.contrasena===pass);
+    if(!u) return alert('Credenciales inválidas');
+    session = u; DB.save(LS_KEYS.SESSION, session);
+    m.close(); renderAuth(); renderProjects();
+  };
+}
+
+/* Add project modal */
+function openAddModal(){
+  const html = `
+    <h3>Crear nuevo proyecto</h3>
+    <div class="form-row"><input id="p-title" placeholder="Título"></div>
+    <div class="form-row"><input id="p-short" placeholder="Descripción corta"></div>
+    <div class="form-row"><textarea id="p-desc" placeholder="Descripción larga"></textarea></div>
+    <div class="form-row"><input id="p-goal" placeholder="Monto solicitado (USD)" type="number" value="1000"></div>
+    <div class="form-row"><button id="p-create" class="btn btn-primary">Crear</button></div>
+  `;
+  const m = openModal(html);
+  m.panel.querySelector('#p-create').onclick = ()=>{
+    const title = m.panel.querySelector('#p-title').value.trim();
+    const short = m.panel.querySelector('#p-short').value.trim();
+    const desc = m.panel.querySelector('#p-desc').value.trim();
+    const goal = Number(m.panel.querySelector('#p-goal').value) || 0;
+    if(!title||!short) return alert('Completa título y descripción corta');
+    const projects = DB.load(LS_KEYS.PROJECTS, []);
+    const id = uid();
+    projects.unshift({id,titulo:title,short,descripcion:desc,montoSolicitado:goal,collected:0,creadorId:session?session.id:null,voluntarios:[],inversionistas:[]});
+    DB.save(LS_KEYS.PROJECTS, projects);
+    m.close(); renderProjects();
+  };
+}
+
+/* Donate modal */
+function openDonateModal(project){
+  if(!session) return alert('Debes iniciar sesión para donar u ofrecer ayuda');
+  const html = `
+    <h3>Donar / Ofrecer ayuda a "${project.titulo}"</h3>
+    <div class="form-row"><select id="d-type"><option value="money">Donación económica</option><option value="volunteer">Voluntariado (mano de obra, capacitaciones, mentoría)</option></select></div>
+    <div class="form-row"><input id="d-amount" placeholder="Monto en USD (solo si es económico)" type="number"></div>
+    <div class="form-row"><textarea id="d-text" placeholder="Describe tu ayuda si eres voluntario"></textarea></div>
+    <div class="form-row"><button id="d-send" class="btn btn-primary">Confirmar</button></div>
+  `;
+  const m = openModal(html);
+  m.panel.querySelector('#d-send').onclick = ()=>{
+    const type = m.panel.querySelector('#d-type').value;
+    const amount = Number(m.panel.querySelector('#d-amount').value) || 0;
+    const text = m.panel.querySelector('#d-text').value.trim();
+    if(type==='money' && amount<=0) return alert('Ingresa un monto válido');
+    if(type==='volunteer' && !text) return alert('Describe tu ayuda');
+    const donations = DB.load(LS_KEYS.DONATIONS, []);
+    donations.unshift({id:uid(),proyectoId:project.id,donorId:session.id,amount,type,text,date:curTime()});
+    DB.save(LS_KEYS.DONATIONS, donations);
+    // update project
+    const projects = DB.load(LS_KEYS.PROJECTS, []);
+    const idx = projects.findIndex(p=>p.id===project.id);
+    if(idx>=0){
+      if(type==='money') projects[idx].collected = Number(projects[idx].collected||0) + amount;
+      else projects[idx].voluntarios = projects[idx].voluntarios || [], projects[idx].voluntarios.push(text + ' ('+session.nombre+')');
+      DB.save(LS_KEYS.PROJECTS, projects);
+    }
+    m.close(); renderProjects(); alert('¡Gracias por tu aporte!');
+  };
+}
+
+/* Comment modal (inversionistas) */
+function openCommentModal(project){
+  if(!session || session.tipoUsuario !== 'inversionista') return alert('Solo inversionistas pueden comentar');
+  const html = `
+    <h3>Dejar comentario público en "${project.titulo}"</h3>
+    <div class="form-row"><textarea id="c-text" placeholder="Comentario"></textarea></div>
+    <div class="form-row"><button id="c-send" class="btn btn-primary">Enviar</button></div>
+  `;
+  const m = openModal(html);
+  m.panel.querySelector('#c-send').onclick = ()=>{
+    const text = m.panel.querySelector('#c-text').value.trim();
+    if(!text) return alert('Escribe un comentario');
+    const comments = DB.load(LS_KEYS.COMMENTS, []);
+    comments.unshift({id:uid(),proyectoId:project.id,userId:session.id,text,date:curTime()});
+    DB.save(LS_KEYS.COMMENTS, comments);
+    m.close(); renderProjects();
+  };
+}
+
+/* Init */
+renderAuth();
+renderProjects();
+
+/* Expose debug for you if needed */
+window.__APOYO = { DB, renderProjects, renderAuth, openAuthModal };
+</script>
+
+</body>
+</html>
