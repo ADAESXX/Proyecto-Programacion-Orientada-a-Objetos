@@ -316,7 +316,7 @@ function initApp(){
   renderAuth(); renderProjects();
 
   // expose for list page and external buttons
-  window.__AP = { users, projects, session };
+  window.__AP = { users, projects, session }; dispatchEvent(new Event('ap-ready'));
   window.openDonateModal = openDonateModal;
   window.openDetailsModal = openDetailsModal;
 }
