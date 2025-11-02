@@ -74,6 +74,22 @@
 }
 </style>
 
+
+<style>
+.btn{ padding:8px 12px; border-radius:10px; font-weight:600; cursor:pointer; border:none; }
+.btn-primary{
+  background: linear-gradient(90deg, #06b6d4, #3b82f6); color:#031018;
+  box-shadow: 0 0 12px rgba(56,189,248,.35);
+  transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
+}
+.btn-primary:hover{ transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 0 20px rgba(56,189,248,.5); }
+.btn-ghost{
+  background: rgba(255,255,255,.06); color:#cfefff; border:1px solid rgba(255,255,255,.10);
+  transition: background .2s ease, transform .15s ease;
+}
+.btn-ghost:hover{ background: rgba(255,255,255,.10); transform: translateY(-1px); }
+</style>
+
 </head>
 <body data-page="list">
 <header>
@@ -104,8 +120,9 @@
 <div id="modal-root" class="modal-root"></div>
 
 <script src="./js/main.js"></script>
+
+
 <script>
-  // Pinta la lista una vez que __AP esté listo
   function renderListOnce(filter=''){
     const tbody = document.getElementById('list-body');
     if(!window.__AP || !Array.isArray(window.__AP.projects)) return false;
@@ -144,41 +161,42 @@
             <div class="meta">de $${goal}</div>
           </td>
           <td>
-            <button class="btn" data-detalles="${p.id}">Ver detalles</button>
-            <button class="btn" data-donar="${p.id}">Donar</button>
+            <button class="btn btn-primary" data-action="detalles" data-id="${p.id}">Ver detalles</button>
+            <button class="btn btn-ghost" data-action="donar" data-id="${p.id}">Donar</button>
           </td>
         </tr>`;
     }).join('');
-
-    // Acciones
-    tbody.querySelectorAll('button[data-donar]').forEach(btn => {
-      const id = Number(btn.getAttribute('data-donar'));
-      const proj = window.__AP.projects.find(x=>x.id===id);
-      if(proj && window.openDonateModal) btn.onclick = ()=> window.openDonateModal(proj);
-    });
-    tbody.querySelectorAll('button[data-detalles]').forEach(btn => {
-      const id = Number(btn.getAttribute('data-detalles'));
-      const proj = window.__AP.projects.find(x=>x.id===id);
-      if(proj && window.openDetailsModal) btn.onclick = ()=> window.openDetailsModal(proj);
-    });
-
     return true;
   }
 
   window.addEventListener('DOMContentLoaded', () => {
     const search = document.getElementById('list-search');
+    const tbody = document.getElementById('list-body');
 
+    // Delegación de eventos para los botones
+    tbody.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]'); if(!btn) return;
+      const id = Number(btn.getAttribute('data-id'));
+      const proj = window.__AP && Array.isArray(window.__AP.projects) ? window.__AP.projects.find(x=>x.id===id) : null;
+      if(!proj){ alert('Proyecto no disponible aún.'); return; }
+      const action = btn.getAttribute('data-action');
+      if(action==='donar'){
+        if(typeof window.openDonateModal === 'function'){ window.openDonateModal(proj); }
+        else { console.warn('openDonateModal no disponible'); alert('La acción Donar no está disponible.'); }
+      } else if(action==='detalles'){
+        if(typeof window.openDetailsModal === 'function'){ window.openDetailsModal(proj); }
+        else { console.warn('openDetailsModal no disponible'); alert('La acción Ver detalles no está disponible.'); }
+      }
+    });
+
+    // Intento inmediato y espera si aún no está lista la app
     if (!renderListOnce()) {
-      const iv = setInterval(() => {
-        if (renderListOnce(search?.value||'')) clearInterval(iv);
-      }, 150);
-      window.addEventListener('ap-ready', () => {
-        renderListOnce(search?.value||'');
-        clearInterval(iv);
-      });
+      const iv = setInterval(() => { if (renderListOnce(search?.value||'')) clearInterval(iv); }, 150);
+      window.addEventListener('ap-ready', () => { renderListOnce(search?.value||''); clearInterval(iv); });
     }
     if (search) search.addEventListener('input', e => renderListOnce(e.target.value));
   });
 </script>
+
 </body>
 </html>
