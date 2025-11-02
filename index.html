@@ -176,6 +176,17 @@ header .auth-buttons { display:flex; gap:10px; align-items:center; }
 .progress-info{ display:flex; justify-content:space-between; font-size:13px; color:#bfe9ff; margin-top:6px; }
 </style>
 
+
+<style>
+.view-all-bottom{
+  display:inline-block; padding:12px 20px; border-radius:12px;
+  background: linear-gradient(90deg,#06b6d4,#3b82f6); color:#031018; font-weight:700;
+  text-decoration:none; box-shadow:0 0 14px rgba(56,189,248,.35);
+  transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
+}
+.view-all-bottom:hover{ transform: translateY(-1px); filter: brightness(1.08); box-shadow:0 0 22px rgba(56,189,248,.55); }
+</style>
+
 </head>
 <body>
   <canvas id="bg-grid"></canvas>
@@ -209,6 +220,10 @@ header .auth-buttons { display:flex; gap:10px; align-items:center; }
   </section>
 
   <section id="projects" class="grid"></section>
+
+  <div style="display:flex; justify-content:center; margin:28px 0;">
+    <a href="proyectos.html" class="view-all-bottom">Ver todos los proyectos</a>
+  </div>
 </main>
 
 <div id="modal-root" class="modal-root"></div>
