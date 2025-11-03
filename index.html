@@ -187,6 +187,18 @@ header .auth-buttons { display:flex; gap:10px; align-items:center; }
 .view-all-bottom:hover{ transform: translateY(-1px); filter: brightness(1.08); box-shadow:0 0 22px rgba(56,189,248,.55); }
 </style>
 
+
+<style>
+#notif-fab{
+  position: fixed; right: 18px; bottom: 18px; z-index: 9999;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:54px; height:54px; border-radius:14px; border:1px solid rgba(255,255,255,.10);
+  background: radial-gradient(180px 120px at 60% 30%, rgba(56,189,248,.18), transparent 60%), rgba(255,255,255,.06);
+  color:#cfefff; font-size:22px; cursor:pointer; box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+#notif-fab:hover{ box-shadow: 0 10px 30px rgba(0,0,0,.45), 0 0 24px rgba(56,189,248,.35) inset; transform: translateY(-1px); }
+</style>
+
 </head>
 <body>
   <canvas id="bg-grid"></canvas>
@@ -228,7 +240,8 @@ header .auth-buttons { display:flex; gap:10px; align-items:center; }
 
 <div id="modal-root" class="modal-root"></div>
 
-<script src="./js/main.js"></script>
+<script src="js/classes/Notificaciones.js"></script>
+  <script src="./js/main.js"></script>
 
 <script>
 (function(){
@@ -281,6 +294,155 @@ header .auth-buttons { display:flex; gap:10px; align-items:center; }
   }
   draw();
 })();
+</script>
+
+<button id="notif-fab" title="Notificaciones">🔔</button>
+<script>document.getElementById("notif-fab").addEventListener("click", ()=>{ if(typeof openNotifModal==="function"){ openNotifModal(); } else { alert("Cargando... inténtalo en un momento."); } });</script>
+
+<script>
+window.openModal = function(html){
+  const root = document.getElementById('modal-root');
+  root.classList.add('show');
+  root.innerHTML = `<div class="modal"><button class="close-x" onclick="__closeModal()">×</button>${html}</div>`;
+  return { root, panel: root.firstElementChild };
+}
+window.__closeModal = function(){
+  const root = document.getElementById('modal-root');
+  root.classList.remove('show');
+  root.innerHTML = '';
+}
+</script>
+
+
+<script>
+
+<script>
+window.openNotifModal = function(){
+  // 1) Sesión
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('ks_session')||'null'); } catch(e){ session = null; }
+
+  if(!session){
+    const html = `<h3>Notificaciones</h3>
+      <div style="opacity:.85">Inicia sesión para ver tus notificaciones.</div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+      </div>`;
+    openModal(html);
+    return;
+  }
+
+  // 2) Leer lista con POO
+  let items = [];
+  try{
+    if(typeof Notificaciones === 'function'){
+      const n = new Notificaciones();
+      items = n.list(session.id);
+    }
+  }catch(e){ items = []; }
+
+  const listHtml = items.length ? items.map(it => `
+    <div style="padding:8px; border-bottom:1px solid rgba(255,255,255,.08)">
+      <div style="font-weight:600">${it.projectTitle||'Proyecto'} • <span style="opacity:.8">${it.type||'actividad'}</span></div>
+      <div class="small" style="opacity:.8">de ${it.fromUserName||'Usuario'} • ${new Date(it.createdAt||Date.now()).toLocaleString()}</div>
+    </div>`).join('') : '<div style="opacity:.8">No tienes notificaciones.</div>';
+
+  const htmlModal = `<h3>Notificaciones</h3>
+    <div style="max-height:300px; overflow:auto; border:1px solid rgba(255,255,255,.08); border-radius:10px; margin-top:8px">${listHtml}</div>
+    <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end">
+      <button class="btn btn-ghost" id="notif-mark">Marcar como leídas</button>
+      <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+    </div>`;
+
+  const m = openModal(htmlModal);
+  const mark = m.panel.querySelector('#notif-mark');
+  if(mark){
+    mark.onclick = () => { try{ new Notificaciones().markAllRead(session.id); }catch(e){} __closeModal(); };
+  }
+}
+</script>
+
+
+
+<script>
+(function(){
+  const fab = document.getElementById('notif-fab');
+  if(fab){
+    fab.addEventListener('click', function(){
+      if(window.openNotifModal){ window.openNotifModal(); }
+      else { alert('Preparando la ventana...'); }
+    });
+  }
+})();
+</script>
+
+
+<script>
+// Versión sin alerts: crea una notificación de prueba silenciosamente y refresca el modal
+window.openNotifModal = function(){
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('ks_session')||'null'); } catch(e){ session = null; }
+
+  if(!session){
+    const html = `<h3>Notificaciones</h3>
+      <div style="opacity:.85">Inicia sesión para ver tus notificaciones.</div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+      </div>`;
+    openModal(html);
+    return;
+  }
+
+  let items = [];
+  try{
+    if(typeof Notificaciones === 'function'){
+      const n = new Notificaciones();
+      items = n.list(session.id);
+    }
+  }catch(e){ items = []; }
+
+  const listHtml = items.length ? items.map(it => `
+    <div style="padding:8px; border-bottom:1px solid rgba(255,255,255,.08)">
+      <div style="font-weight:600">${it.projectTitle||'Proyecto'} • <span style="opacity:.8">${it.type||'actividad'}</span></div>
+      <div class="small" style="opacity:.8">de ${it.fromUserName||'Usuario'} • ${new Date(it.createdAt||Date.now()).toLocaleString()}</div>
+    </div>`).join('') : '<div style="opacity:.8">No tienes notificaciones.</div>';
+
+  const htmlModal = `<h3>Notificaciones</h3>
+    <div style="max-height:300px; overflow:auto; border:1px solid rgba(255,255,255,.08); border-radius:10px; margin-top:8px">${listHtml}</div>
+    <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end">
+      <button class="btn btn-ghost" id="notif-demo">Crear notificación de prueba</button>
+      <button class="btn btn-ghost" id="notif-mark">Marcar como leídas</button>
+      <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+    </div>`;
+
+  const m = openModal(htmlModal);
+  const mark = m.panel.querySelector('#notif-mark');
+  if(mark){
+    mark.onclick = () => { try{ new Notificaciones().markAllRead(session.id); }catch(e){} __closeModal(); };
+  }
+  const demo = m.panel.querySelector('#notif-demo');
+  if(demo){
+    demo.onclick = () => {
+      try{
+        const key = 'KS_NOTIF_' + session.id;
+        const arr = JSON.parse(localStorage.getItem(key)||'[]');
+        arr.unshift({
+          id: Date.now(),
+          type: 'prueba',
+          projectId: 0,
+          projectTitle: 'Demo de notificación',
+          fromUserId: session.id,
+          fromUserName: session.nombre,
+          createdAt: new Date().toISOString(),
+          read: false
+        });
+        localStorage.setItem(key, JSON.stringify(arr));
+        __closeModal();
+        setTimeout(()=>openNotifModal(), 10);
+      }catch(e){ /* silencioso */ }
+    };
+  }
+}
 </script>
 
 </body>

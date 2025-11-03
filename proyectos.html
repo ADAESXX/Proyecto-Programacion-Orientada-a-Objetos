@@ -198,5 +198,32 @@
   });
 </script>
 
+
+<script>
+window.openModal = function(html){
+  const root = document.getElementById('modal-root');
+  root.classList.add('show');
+  root.innerHTML = `<div class="modal"><button class="close-x" onclick="__closeModal()">×</button>${html}</div>`;
+  return { root, panel: root.firstElementChild };
+}
+window.__closeModal = function(){
+  const root = document.getElementById('modal-root');
+  root.classList.remove('show');
+  root.innerHTML = '';
+}
+</script>
+
+
+<script>
+window.openNotifModal = function(){
+  const html = `<h3>Notificaciones</h3>
+    <div style="opacity:.85">Aún no hay notificaciones.</div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+    </div>`;
+  openModal(html);
+}
+</script>
+
 </body>
 </html>

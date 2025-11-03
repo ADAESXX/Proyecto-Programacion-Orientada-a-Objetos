@@ -316,6 +316,33 @@ function initApp(){
   renderAuth(); renderProjects();
 
   // expose for list page and external buttons
+  
+  // --- Notificaciones (solo visualización) ---
+  let __notifier = null;
+  function openNotifModal(){
+    if(!__notifier){
+      if(typeof Notificaciones!=='undefined'){ __notifier = new Notificaciones(); }
+      else { console.warn('Clase Notificaciones no cargada; mostrando modal vacío'); }
+    }
+    if(!session){ alert('Inicia sesión para ver notificaciones'); return; }
+    const items = __notifier.list(session.id);
+    const listHtml = items.length ? items.map(n => `
+      <div style="padding:8px; border-bottom:1px solid rgba(255,255,255,.08)">
+        <div style="font-weight:600">${n.projectTitle||'Proyecto'} • <span style="opacity:.8">${n.type||'actividad'}</span></div>
+        <div class="small">de ${n.fromUserName||'Usuario'} • ${new Date(n.createdAt||Date.now()).toLocaleString()}</div>
+      </div>`).join('') : '<div class="small" style="opacity:.8">No tienes notificaciones.</div>';
+    const html = `<div class="modal"><button class="close-x" onclick="__closeModal()">×</button>
+      <h3>Notificaciones</h3>
+      <div style="max-height:300px; overflow:auto; border:1px solid rgba(255,255,255,.08); border-radius:10px; margin-top:8px">${listHtml}</div>
+      <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end">
+        <button class="btn btn-ghost" id="notif-clear">Marcar como leídas</button>
+        <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+      </div></div>`;
+    const m=openModal(html);
+    const clearBtn = m.panel.querySelector('#notif-clear');
+    if(clearBtn){ clearBtn.onclick = ()=>{ __notifier.markAllRead(session.id); __closeModal(); }; }
+  }
+
   window.__AP = { users, projects, session }; dispatchEvent(new Event('ap-ready'));
   window.openDonateModal = openDonateModal;
   window.openDetailsModal = openDetailsModal;
