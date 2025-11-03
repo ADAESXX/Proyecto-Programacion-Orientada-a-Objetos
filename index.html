@@ -199,6 +199,18 @@ header .auth-buttons { display:flex; gap:10px; align-items:center; }
 #notif-fab:hover{ box-shadow: 0 10px 30px rgba(0,0,0,.45), 0 0 24px rgba(56,189,248,.35) inset; transform: translateY(-1px); }
 </style>
 
+
+<style>
+#msg-fab{
+  position: fixed; right: 18px; bottom: 84px; z-index: 9999;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:54px; height:54px; border-radius:14px; border:1px solid rgba(255,255,255,.10);
+  background: radial-gradient(180px 120px at 60% 30%, rgba(56,189,248,.18), transparent 60%), rgba(255,255,255,.06);
+  color:#cfefff; font-size:22px; cursor:pointer; box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+#msg-fab:hover{ box-shadow: 0 10px 30px rgba(0,0,0,.45), 0 0 24px rgba(56,189,248,.35) inset; transform: translateY(-1px); }
+</style>
+
 </head>
 <body>
   <canvas id="bg-grid"></canvas>
@@ -384,6 +396,33 @@ window.openNotifModal = function(){
     };
   }
 }
+</script>
+
+
+<!-- Botón de Mensajes (solo UI) -->
+<style>
+  
+</style>
+<button id="msg-fab" title="Mensajes">💬</button>
+
+
+<script>
+window.openMessagesModal = function(){
+  const html = `<h3>Mensajes</h3>
+    <div style="opacity:.85">Módulo de mensajes (próximamente).</div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+    </div>`;
+  openModal(html);
+};
+
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.getElementById('msg-fab');
+  if(btn){ btn.addEventListener('click', function(e){
+    e.preventDefault(); e.stopPropagation();
+    if(window.openMessagesModal) openMessagesModal();
+  });}
+});
 </script>
 
 </body>
