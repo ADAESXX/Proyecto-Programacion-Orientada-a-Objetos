@@ -95,7 +95,7 @@ function initApp(){
         <h3>${p.titulo||'Proyecto'}</h3>
         <div class="small">${p.descripcion||''}</div>
         <div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-        <div class="progress-info"><span>$${raised} recaudado</span><span>${pct}% de $${goal}</span></div>
+        <div class="progress-info"><span>Q${raised} recaudado</span><span>${pct}% de Q${goal}</span></div>
         <div style="margin-top:10px">
           <button class="btn btn-primary" data-action="detalles" data-id="${p.id}">Ver detalles</button>
           <button class="btn btn-ghost" data-action="donar" data-id="${p.id}">Donar</button>
@@ -237,6 +237,37 @@ function initApp(){
       if(type==='money'){ if(amount<=0) return alert('Monto inválido'); raw[idx].collected=(raw[idx].collected||0)+amount; }
       else { raw[idx].voluntarios=raw[idx].voluntarios||[]; raw[idx].voluntarios.push({user:session.nombre, text:text||'Ayuda ofrecida', date:new Date().toISOString()}); }
       DB.save(LS_PROJ,raw); projects = reviveProjects(DB.load(LS_PROJ,[]), users); __closeModal(); renderProjects(); alert('¡Gracias por tu aporte!');
+
+// --- Notificación para el creador ---
+try{
+  const keyProjIdx = (typeof idx!=='undefined') ? idx : -1;
+  const projRef = (Array.isArray(raw) && keyProjIdx>=0) ? raw[keyProjIdx] : project;
+  const owner = (projRef && projRef.creador) ? projRef.creador : (project && project.creador ? project.creador : null);
+  const creatorId = owner && owner.id ? String(owner.id) : null;
+  if(creatorId && session && String(creatorId)!==String(session.id) && typeof Notificaciones==='function'){
+    (function(){ 
+  try{
+    const typeEl = m && m.panel ? m.panel.querySelector('#d-type') : null;
+    const amtEl  = m && m.panel ? m.panel.querySelector('#d-amount') : null;
+    const msgEl  = m && m.panel ? m.panel.querySelector('#d-text') : null;
+    const donationType = typeEl ? String(typeEl.value||'donación') : 'donación';
+    const donationAmount = amtEl ? Number(amtEl.value||0) : 0;
+    const donationMessage = msgEl ? String(msgEl.value||'').trim() : '';
+    new Notificaciones().add(creatorId, { 
+      type:'donacion',
+      projectId: String(projRef.id),
+      projectTitle: projRef.titulo||'Proyecto',
+      fromUserId: String(session.id),
+      fromUserName: session.nombre,
+      amount: donationAmount,
+      donationType: donationType,
+      message: donationMessage
+    });
+  }catch(e){}
+})();
+  }
+}catch(e){ /* silencioso */ }
+
     };
   }
 
@@ -253,7 +284,7 @@ function initApp(){
       ${imgHTML}
       <div class="small" style="margin-top:8px">${project.descripcion||''}</div>
       <div class="progress-bar" style="margin-top:10px"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-      <div class="progress-info"><span>$${raised} recaudado</span><span>${pct}% de $${goal}</span></div>
+      <div class="progress-info"><span>Q${raised} recaudado</span><span>${pct}% de Q${goal}</span></div>
       <div style="margin-top:12px">
         <h4>Actividad</h4>
         <div id="activity" class="small" style="max-height:200px; overflow:auto; border:1px solid rgba(255,255,255,.08); padding:8px; border-radius:8px;"></div>
@@ -283,6 +314,52 @@ function initApp(){
       </div>`).join('');
     }
     renderActivity();
+
+// --- Notificación para el creador ---
+try{
+  const keyProjIdx = (typeof idx!=='undefined') ? idx : -1;
+  const projRef = (Array.isArray(raw) && keyProjIdx>=0) ? raw[keyProjIdx] : project;
+  const owner = (projRef && projRef.creador) ? projRef.creador : (project && project.creador ? project.creador : null);
+  const creatorId = owner && owner.id ? String(owner.id) : null;
+  if(creatorId && session && String(creatorId)!==String(session.id) && typeof Notificaciones==='function'){
+    (function(){
+  try{
+    new Notificaciones().add(creatorId, {
+      type:'ayuda',
+      projectId: String(projRef.id),
+      projectTitle: projRef.titulo||'Proyecto',
+      fromUserId: String(session.id),
+      fromUserName: session.nombre,
+      helpText: (typeof box!=='undefined' ? String(box) : '')
+    });
+  }catch(e){}
+})();
+  }
+}catch(e){ /* silencioso */ }
+
+
+// --- Notificación para el creador ---
+try{
+  const keyProjIdx = (typeof idx!=='undefined') ? idx : -1;
+  const projRef = (Array.isArray(raw) && keyProjIdx>=0) ? raw[keyProjIdx] : project;
+  const owner = (projRef && projRef.creador) ? projRef.creador : (project && project.creador ? project.creador : null);
+  const creatorId = owner && owner.id ? String(owner.id) : null;
+  if(creatorId && session && String(creatorId)!==String(session.id) && typeof Notificaciones==='function'){
+    (function(){
+  try{
+    new Notificaciones().add(creatorId, {
+      type:'comentario',
+      projectId: String(projRef.id),
+      projectTitle: projRef.titulo||'Proyecto',
+      fromUserId: String(session.id),
+      fromUserName: session.nombre,
+      commentText: (typeof box!=='undefined' ? String(box) : '')
+    });
+  }catch(e){}
+})();
+  }
+}catch(e){ /* silencioso */ }
+
 
     const donateBtn = m.panel.querySelector('#do-donate');
     donateBtn.onclick = ()=>{ __closeModal(); openDonateModal(project); };
