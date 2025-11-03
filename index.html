@@ -253,6 +253,8 @@ header .auth-buttons { display:flex; gap:10px; align-items:center; }
 <div id="modal-root" class="modal-root"></div>
 
 <script src="js/classes/Notificaciones.js"></script>
+  <script src="js/classes/Notificaciones.js"></script>
+  <script src="js/classes/Mensajes.js"></script>
   <script src="./js/main.js"></script>
 
 <script>
@@ -406,23 +408,135 @@ window.openNotifModal = function(){
 <button id="msg-fab" title="Mensajes">💬</button>
 
 
+
+
+
 <script>
 window.openMessagesModal = function(){
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('ks_session')||'null'); } catch(e){ session = null; }
+  if(!session){
+    const html = `<h3>Mensajes</h3>
+      <div style="opacity:.85">Inicia sesión para usar mensajes.</div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+      </div>`;
+    openModal(html); return;
+  }
+  const users = JSON.parse(localStorage.getItem('ks_users')||'[]');
+  const me = users.find(u=>String(u.id)===String(session.id)) || session;
+  const others = users.filter(u=>String(u.id)!==String(session.id));
+
+  const svc = new Mensajes();
+  let inbox = svc.listInbox(session.id);
+  let sent  = svc.listSent(session.id);
+
+  function row(m){
+    return `<div style="padding:8px;border-bottom:1px solid rgba(255,255,255,.08)">
+      <div style="font-weight:600">${m.fromName} → ${m.toName}</div>
+      <div class="small" style="opacity:.85">${(m.text||'').replace(/</g,'&lt;')}</div>
+      <div class="small" style="opacity:.7">${new Date(m.createdAt).toLocaleString()}</div>
+    </div>`;
+  }
+
+  function renderPanel(kind){
+    if(kind==='inbox'){
+      inbox = svc.listInbox(session.id);
+      return inbox.length? inbox.map(row).join('') : '<div style="opacity:.8">No tienes mensajes.</div>';
+    } else if(kind==='sent'){
+      sent = svc.listSent(session.id);
+      return sent.length? sent.map(row).join('') : '<div style="opacity:.8">No has enviado mensajes.</div>';
+    }
+    return '';
+  }
+
+  const options = others.map(u=>`<option value="${u.id}">${u.nombre} (${u.tipoUsuario||u.rol||''})</option>`).join('');
   const html = `<h3>Mensajes</h3>
-    <div style="opacity:.85">Módulo de mensajes (próximamente).</div>
-    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+      <button class="btn btn-ghost" id="tab-inbox">Bandeja</button>
+      <button class="btn btn-ghost" id="tab-sent">Enviados</button>
+      <button class="btn btn-ghost" id="tab-compose">Redactar</button>
+    </div>
+    <div id="msg-panel" style="margin-top:10px;border:1px solid rgba(255,255,255,.08);border-radius:10px;max-height:320px;overflow:auto;padding:8px">
+      ${renderPanel('inbox')}
+    </div>
+    <div id="compose" style="display:none;margin-top:10px;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label>Para:</label>
+        <select id="msg-to" class="btn btn-ghost" style="min-width:220px">${options}</select>
+      </div>
+      <textarea id="msg-text" rows="3" style="width:100%;margin-top:8px;background:rgba(255,255,255,.06);color:#dff3ff;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px" placeholder="Escribe tu mensaje..."></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+        <button class="btn btn-ghost" id="msg-send">Enviar</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+      <button class="btn btn-ghost" id="msg-mark">Marcar bandeja como leída</button>
       <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
     </div>`;
-  openModal(html);
-};
 
-document.addEventListener('DOMContentLoaded', function(){
-  var btn = document.getElementById('msg-fab');
-  if(btn){ btn.addEventListener('click', function(e){
-    e.preventDefault(); e.stopPropagation();
-    if(window.openMessagesModal) openMessagesModal();
-  });}
-});
+  const m = openModal(html);
+  const panel = m.panel.querySelector('#msg-panel');
+  const compose = m.panel.querySelector('#compose');
+
+  function switchTab(which){
+    if(which==='compose'){ compose.style.display='block'; panel.innerHTML=''; }
+    else { compose.style.display='none'; panel.innerHTML = renderPanel(which); }
+  }
+
+  const tabInbox = m.panel.querySelector('#tab-inbox');
+  const tabSent  = m.panel.querySelector('#tab-sent');
+  const tabCompose = m.panel.querySelector('#tab-compose');
+  if(tabInbox) tabInbox.onclick = ()=>switchTab('inbox');
+  if(tabSent)  tabSent.onclick  = ()=>switchTab('sent');
+  if(tabCompose) tabCompose.onclick = ()=>switchTab('compose');
+
+  const mark = m.panel.querySelector('#msg-mark');
+  if(mark){ mark.onclick = ()=>{ try{ svc.markAllRead(session.id);}catch(e){} __closeModal(); }; }
+
+  const sendBtn = m.panel.querySelector('#msg-send');
+  if(sendBtn){
+    sendBtn.onclick = () => {
+      try{
+        const toId = m.panel.querySelector('#msg-to')?.value;
+        const text = m.panel.querySelector('#msg-text')?.value?.trim();
+        const us = JSON.parse(localStorage.getItem('ks_users')||'[]');
+        const me2 = us.find(u=>String(u.id)===String(session.id)) || session;
+        const toUser = us.find(u=>String(u.id)===String(toId));
+        if(toUser && text){
+          svc.send(me2, toUser, text);
+          __closeModal();
+          setTimeout(()=>openMessagesModal(), 10); // refresca
+        }
+      }catch(e){}
+    };
+  }
+};
+</script>
+
+
+<script>
+(function bindMsgFab(){
+  function attach(){
+    var btn = document.getElementById('msg-fab');
+    if(btn){
+      btn.onclick = function(e){
+        e.preventDefault(); e.stopPropagation();
+        if (typeof window.openMessagesModal === 'function') {
+          window.openMessagesModal();
+        } else {
+          // fallback: simple placeholder to confirm binding works
+          openModal(`<h3>Mensajes</h3><div style='opacity:.8'>Cargando módulo…</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-primary" onclick="__closeModal()">Cerrar</button></div>`);
+        }
+      };
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attach);
+  } else {
+    attach();
+  }
+})();
 </script>
 
 </body>
