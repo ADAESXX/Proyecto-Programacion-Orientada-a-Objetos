@@ -1,6 +1,6 @@
-//clase revisada - validaciones completas
-
-//hereda método y atributos de la clase Usuario
+// Usamos ayuda de la IA para convertir esta clase de java a js
+// Programador encargado: Allyson Escobar
+//Fecha de inicio: 16/10/2025
 class Emprendedor extends Usuario {
     
     // Atributo para guardar el nombre principal del proyecto del emprendedor
