@@ -1,5 +1,6 @@
-
-// POO: Mensajes por usuario. Persistencia en LocalStorage.
+// Usamos ayuda de la IA para convertir esta clase de java a js
+// Programador encargado: Allyson Escobar
+//Fecha de inicio: 16/10/2025
 class Mensajes{
   constructor(prefix='KS_MSG_'){ this.prefix = prefix; }
   _inboxKey(uid){ return this.prefix + String(uid); }
