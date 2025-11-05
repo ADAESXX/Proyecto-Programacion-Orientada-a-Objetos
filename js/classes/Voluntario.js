@@ -1,4 +1,3 @@
-// models/Voluntario.js
 
 class Voluntario extends Usuario {
 
