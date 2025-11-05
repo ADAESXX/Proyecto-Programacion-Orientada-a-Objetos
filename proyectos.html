@@ -1,0 +1,232 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Proyectos • Apoyo en Guatemala</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --line: rgba(255,255,255,.08);
+      --muted:#bfe9ff; --blue:#3b82f6; --cyan:#06b6d4;
+    }
+    *{ box-sizing: border-box; }
+    body{
+      margin:0; font-family:'Poppins',system-ui;
+      color:#e6eef6;
+      background:
+        radial-gradient(900px 600px at 20% 10%, rgba(56,189,248,.10), transparent 60%),
+        radial-gradient(800px 500px at 80% 70%, rgba(45,212,191,.08), transparent 60%),
+        linear-gradient(180deg,#05060a,#07101a);
+      min-height:100dvh;
+    }
+    header{
+      padding:16px 24px; display:flex; justify-content:space-between; align-items:center;
+      border-bottom:1px solid var(--line); backdrop-filter: blur(6px);
+      position:sticky; top:0; z-index:10; background:rgba(5,6,10,.6);
+    }
+    header a{ color:#8ddcff; text-decoration:none; }
+    .container{ max-width:1100px; margin:20px auto; padding:0 18px; }
+    h1{ margin:0; font-size:22px; font-weight:700; letter-spacing:.3px; }
+    .toolbar{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+    .search{ flex:1; }
+    .search input{
+      width:100%; padding:10px 12px; border-radius:10px;
+      background: rgba(255,255,255,.05); border:1px solid var(--line); color:#e6eef6; outline:none;
+      box-shadow: 0 0 14px rgba(56,189,248,.12) inset;
+    }
+    table{ width:100%; border-collapse: collapse; border-radius:12px; overflow:hidden; }
+    thead th{ text-align:left; font-weight:600; padding:10px; border-bottom:1px solid var(--line); color:#8ddcff; background: rgba(255,255,255,.02); }
+    tbody td{ padding:10px; border-bottom:1px solid var(--line); vertical-align:middle; }
+    tbody tr:hover{ background: rgba(255,255,255,.03); }
+    .thumb{ width:72px; height:48px; border-radius:8px; object-fit:cover; background: rgba(56,189,248,.07); border:1px dashed rgba(56,189,248,.25); display:block; }
+    .thumb.noimg{ display:flex; align-items:center; justify-content:center; color:rgba(200,240,255,.8); font-size:12px; }
+    .progress{ width:100%; height:8px; background: rgba(255,255,255,.08); border-radius:8px; overflow:hidden; }
+    .progress > div{ height:100%; background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+    .meta{ color:var(--muted); font-size:12px; margin-top:4px; }
+    .btn{ padding:8px 12px; border-radius:8px; background: linear-gradient(90deg, var(--cyan), var(--blue)); color:#031018; border:none; font-weight:600; cursor:pointer; box-shadow: 0 0 8px rgba(56,189,248,.35); }
+  </style>
+
+<style>
+/* === Modal styles (mismos que index) === */
+.modal-root{
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background: rgba(2,8,18,.55); backdrop-filter: blur(6px); z-index:100;
+}
+.modal-root.show{ display:flex; }
+.modal{
+  width:min(680px, 92vw); max-height:84vh; overflow:auto;
+  background: rgba(9,14,24,.92); border:1px solid rgba(255,255,255,.08);
+  border-radius:16px; padding:16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5), 0 0 24px rgba(56,189,248,.15);
+}
+.close-x{
+  position:absolute; right:16px; top:10px; background:transparent; color:#8ddcff;
+  border:none; font-size:22px; cursor:pointer;
+}
+.form-row{ margin-top:8px; }
+.form-row input, .form-row textarea, .form-row select{
+  width:100%; padding:10px 12px; border-radius:10px;
+  background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+  color:#e6eef6; outline:none; resize:vertical; min-height:40px;
+  box-shadow: 0 0 14px rgba(56,189,248,.12) inset;
+}
+</style>
+
+
+<style>
+.btn{ padding:8px 12px; border-radius:10px; font-weight:600; cursor:pointer; border:none; }
+.btn-primary{
+  background: linear-gradient(90deg, #06b6d4, #3b82f6); color:#031018;
+  box-shadow: 0 0 12px rgba(56,189,248,.35);
+  transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
+}
+.btn-primary:hover{ transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 0 20px rgba(56,189,248,.5); }
+.btn-ghost{
+  background: rgba(255,255,255,.06); color:#cfefff; border:1px solid rgba(255,255,255,.10);
+  transition: background .2s ease, transform .15s ease;
+}
+.btn-ghost:hover{ background: rgba(255,255,255,.10); transform: translateY(-1px); }
+</style>
+
+</head>
+<body data-page="list">
+<header>
+  <a href="index.html">← Volver</a>
+  <h1>Todos los proyectos</h1>
+  <div></div>
+</header>
+
+<main class="container">
+  <div class="toolbar">
+    <div class="search"><input id="list-search" placeholder="Buscar por nombre o descripción..."></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Proyecto</th>
+        <th style="width:25%">Progreso</th>
+        <th style="width:18%">Meta / Recaudado</th>
+        <th style="width:180px">Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="list-body"></tbody>
+  </table>
+</main>
+
+<!-- raíz de modales -->
+<div id="modal-root" class="modal-root"></div>
+
+<script src="js/classes/Vista.js"></script>
+<script src="js/classes/Controlador.js"></script>
+<script src="./js/main.js"></script>
+
+
+<script>
+  function renderListOnce(filter=''){
+    const tbody = document.getElementById('list-body');
+    if(!window.__AP || !Array.isArray(window.__AP.projects)) return false;
+
+    const ps = window.__AP.projects.slice();
+    const q = (filter||'').toLowerCase();
+    const data = ps.filter(p =>
+      !q ||
+      (p.titulo && p.titulo.toLowerCase().includes(q)) ||
+      (p.descripcion && p.descripcion.toLowerCase().includes(q))
+    );
+
+    tbody.innerHTML = data.map(p => {
+      const goal = Number(p.montoSolicitado||p.goal||0)||0;
+      const raised = Number(p.collected||0)||0;
+      const pct = goal>0 ? Math.min(Math.round((raised/goal)*100),100) : 0;
+      const hasImg = p.img && String(p.img).trim()!=='';
+      const thumb = hasImg ? `<img class="thumb" src="${p.img}" alt="${p.titulo}">` : `<div class="thumb noimg">Sin<br>imagen</div>`;
+      return `
+        <tr>
+          <td>
+            <div style="display:flex; gap:10px; align-items:center;">
+              ${thumb}
+              <div>
+                <div style="font-weight:600">${p.titulo||'Proyecto'}</div>
+                <div style="font-size:12px; color:#bfe9ff">${p.descripcion||''}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="progress"><div style="width:${pct}%"></div></div>
+            <div class="meta">${pct}%</div>
+          </td>
+          <td>
+            <div class="meta">Q${raised} recaudado</div>
+            <div class="meta">de Q${goal}</div>
+          </td>
+          <td>
+            <button class="btn btn-primary" data-action="detalles" data-id="${p.id}">Ver detalles</button>
+            <button class="btn btn-ghost" data-action="donar" data-id="${p.id}">Donar</button>
+          </td>
+        </tr>`;
+    }).join('');
+    return true;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const search = document.getElementById('list-search');
+    const tbody = document.getElementById('list-body');
+
+    // Delegación de eventos para los botones
+    tbody.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]'); if(!btn) return;
+      const id = Number(btn.getAttribute('data-id'));
+      const proj = window.__AP && Array.isArray(window.__AP.projects) ? window.__AP.projects.find(x=>x.id===id) : null;
+      if(!proj){ alert('Proyecto no disponible aún.'); return; }
+      const action = btn.getAttribute('data-action');
+      if(action==='donar'){
+        if(typeof window.openDonateModal === 'function'){ window.openDonateModal(proj); }
+        else { console.warn('openDonateModal no disponible'); alert('La acción Donar no está disponible.'); }
+      } else if(action==='detalles'){
+        if(typeof window.openDetailsModal === 'function'){ window.openDetailsModal(proj); }
+        else { console.warn('openDetailsModal no disponible'); alert('La acción Ver detalles no está disponible.'); }
+      }
+    });
+
+    // Intento inmediato y espera si aún no está lista la app
+    if (!renderListOnce()) {
+      const iv = setInterval(() => { if (renderListOnce(search?.value||'')) clearInterval(iv); }, 150);
+      window.addEventListener('ap-ready', () => { renderListOnce(search?.value||''); clearInterval(iv); });
+    }
+    if (search) search.addEventListener('input', e => renderListOnce(e.target.value));
+  });
+</script>
+
+
+<script>
+window.openModal = function(html){
+  const root = document.getElementById('modal-root');
+  root.classList.add('show');
+  root.innerHTML = `<div class="modal"><button class="close-x" onclick="__closeModal()">×</button>${html}</div>`;
+  return { root, panel: root.firstElementChild };
+}
+window.__closeModal = function(){
+  const root = document.getElementById('modal-root');
+  root.classList.remove('show');
+  root.innerHTML = '';
+}
+</script>
+
+
+<script>
+window.openNotifModal = function(){
+  const html = `<h3>Notificaciones</h3>
+    <div style="opacity:.85">Aún no hay notificaciones.</div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+    </div>`;
+  openModal(html);
+}
+</script>
+
+<script>window.addEventListener("DOMContentLoaded",()=>{ try{ (new Controlador(new Vista())).init(); }catch(e){} });</script>
+</body>
+</html>

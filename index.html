@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Apoyo en Guatemala</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05060a;--card:#0b1220;--muted:#9aa4b2;--accent1:#0ea5e9;--accent2:#06b6d4}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Poppins',system-ui,Roboto;color:#e6eef6;background:linear-gradient(180deg,var(--bg),#07101a);min-height:100vh}
+header{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.03)}
+.brand{display:flex;flex-direction:column}
+.brand h1{margin:0;color:var(--accent1);letter-spacing:0.3px}
+.brand p{margin:0;color:var(--muted);font-size:13px}
+.controls{display:flex;gap:10px;align-items:center}
+.search input{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted);width:240px}
+.btn{padding:8px 12px;border-radius:10px;border:0;cursor:pointer}
+.btn-primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#042027;font-weight:600;box-shadow:0 10px 30px rgba(6,182,212,0.06)}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+.main{max-width:1100px;margin:20px auto;padding:0 18px}
+.card{background:var(--card);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.card img{width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+.modal-root{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.88);z-index:60}
+.modal-root.show{display:flex}
+.modal{width:100%;max-width:640px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:18px;border-radius:12px;position:relative}
+.close-x{position:absolute;right:12px;top:12px;background:#ef4444;border-radius:50%;width:30px;height:30px;border:none;color:white;cursor:pointer}
+.small{color:var(--muted);font-size:13px}
+.form-row{margin-top:10px}
+input[type="file"]{color:var(--muted)}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.search input{width:140px}}
+</style>
+
+<style>
+.modal input,
+.modal select,
+.modal textarea {
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #e0e0e0;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+}
+.modal input::placeholder,
+.modal textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+</style>
+
+
+<style>
+:root{
+  --bg1:#06111f;
+  --bg2:#071b2a;
+  --card:#0e1b2a;
+  --muted:#9db0c2;
+  --accent:#2dd4bf; /* green-cyan */
+  --accent2:#38bdf8; /* electric blue */
+  --glow: 0 0 18px rgba(56,189,248,.25), 0 0 40px rgba(45,212,191,.18);
+}
+/* Canvas background */
+#bg-grid{
+  position: fixed;
+  inset: 0;
+  width: 100vw; height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Layer content above */
+header, main, footer, .modal, .modal-root { position: relative; z-index: 1; }
+
+/* Body gradient */
+body{
+  background: radial-gradient(1200px 800px at 20% 10%, rgba(56,189,248,0.10), transparent 60%),
+              radial-gradient(1000px 700px at 80% 70%, rgba(45,212,191,0.08), transparent 60%),
+              linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+
+/* Buttons */
+.btn, .submit-btn{
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  color:#031018; border:none;
+  box-shadow: var(--glow);
+  transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
+}
+.btn:hover, .submit-btn:hover{ transform: translateY(-1px); filter: brightness(1.08); }
+.btn-ghost{
+  background: rgba(255,255,255,0.03) !important;
+  border:1px solid rgba(255,255,255,0.08) !important;
+  color: var(--muted) !important;
+}
+/* Cards */
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(56,189,248,0.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 22px rgba(56,189,248,.06);
+}
+.card h3{ color:#8ddcff; text-shadow: 0 0 6px rgba(56,189,248,.25); }
+.card img{ border-bottom:1px solid rgba(56,189,248,.15); }
+
+/* Header */
+header{
+  background: rgba(8,17,28,.65);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(56,189,248,0.12);
+}
+header h1{ color:#8ddcff; letter-spacing:.3px; }
+header p{ color: var(--muted); }
+
+/* Modals */
+.modal-root{ background: linear-gradient(rgba(4,10,18,.6), rgba(4,10,18,.6)); }
+.modal{
+  background: linear-gradient(180deg, rgba(14,27,42,.95), rgba(10,20,33,.95));
+  border:1px solid rgba(56,189,248,0.15);
+  box-shadow: var(--glow);
+}
+.close-x{ background:#ef4444; }
+
+/* Inputs in modal (keep v4.1 style but harmonize) */
+.modal input, .modal select, .modal textarea{
+  width:100%;
+  padding:10px;
+  background: rgba(255,255,255,.05);
+  border:1px solid rgba(56,189,248,.18);
+  border-radius:10px;
+  color:#e6f2ff;
+  font-family:'Poppins', sans-serif;
+  outline:none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+.modal input::placeholder, .modal textarea::placeholder{ color: rgba(173, 205, 233, .6); }
+</style>
+
+
+<style>
+.project-card{ border-radius:16px; overflow:hidden; }
+.project-img-wrapper{ width:100%; height:180px; border-radius:16px 16px 0 0; overflow:hidden; margin-bottom:10px; }
+.project-img{ width:100%; height:100%; object-fit:cover; box-shadow:0 0 18px rgba(56,189,248,.25); }
+.no-image{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; background: rgba(56,189,248,0.07); border:1px dashed rgba(56,189,248,0.25); color: rgba(200,240,255,0.8); text-shadow:0 0 6px rgba(56,189,248,.3); }
+.progress-bar{ width:100%; height:10px; background:rgba(255,255,255,.08); border-radius:10px; overflow:hidden; margin-top:8px; }
+.progress-bar-fill{ height:100%; background:linear-gradient(90deg,#06b6d4,#3b82f6); box-shadow:0 0 12px rgba(56,189,248,.35) inset; }
+.progress-info{ display:flex; justify-content:space-between; font-size:13px; color:#bfe9ff; margin-top:6px; }
+</style>
+
+
+<style>
+header { display:flex; justify-content:space-between; align-items:center; }
+header .auth-buttons { display:flex; gap:10px; align-items:center; }
+.view-all-top{
+  display:inline-block;
+  padding:10px 16px;
+  margin-left:12px;
+  border-radius:10px;
+  text-decoration:none;
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
+  color:#031018; font-weight:600;
+  box-shadow: 0 0 12px rgba(56,189,248,.35);
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+.view-all-top:hover{ transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 0 20px rgba(56,189,248,.5); }
+</style>
+
+
+<style>
+.project-card{ border-radius:16px; overflow:hidden; }
+.project-img-wrapper{ width:100%; height:180px; border-radius:16px 16px 0 0; overflow:hidden; margin-bottom:10px; }
+.project-img{ width:100%; height:100%; object-fit:cover; box-shadow:0 0 18px rgba(56,189,248,.25); }
+.no-image{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; background: rgba(56,189,248,0.07); border:1px dashed rgba(56,189,248,0.25); color: rgba(200,240,255,0.8); text-shadow:0 0 6px rgba(56,189,248,.3); }
+.progress-bar{ width:100%; height:10px; background:rgba(255,255,255,.08); border-radius:10px; overflow:hidden; margin-top:8px; }
+.progress-bar-fill{ height:100%; background:linear-gradient(90deg,#06b6d4,#3b82f6); box-shadow:0 0 12px rgba(56,189,248,.35) inset; }
+.progress-info{ display:flex; justify-content:space-between; font-size:13px; color:#bfe9ff; margin-top:6px; }
+</style>
+
+
+<style>
+.view-all-bottom{
+  display:inline-block; padding:12px 20px; border-radius:12px;
+  background: linear-gradient(90deg,#06b6d4,#3b82f6); color:#031018; font-weight:700;
+  text-decoration:none; box-shadow:0 0 14px rgba(56,189,248,.35);
+  transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
+}
+.view-all-bottom:hover{ transform: translateY(-1px); filter: brightness(1.08); box-shadow:0 0 22px rgba(56,189,248,.55); }
+</style>
+
+
+<style>
+#notif-fab{
+  position: fixed; right: 18px; bottom: 18px; z-index: 9999;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:54px; height:54px; border-radius:14px; border:1px solid rgba(255,255,255,.10);
+  background: radial-gradient(180px 120px at 60% 30%, rgba(56,189,248,.18), transparent 60%), rgba(255,255,255,.06);
+  color:#cfefff; font-size:22px; cursor:pointer; box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+#notif-fab:hover{ box-shadow: 0 10px 30px rgba(0,0,0,.45), 0 0 24px rgba(56,189,248,.35) inset; transform: translateY(-1px); }
+</style>
+
+
+<style>
+#msg-fab{
+  position: fixed; right: 18px; bottom: 84px; z-index: 9999;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:54px; height:54px; border-radius:14px; border:1px solid rgba(255,255,255,.10);
+  background: radial-gradient(180px 120px at 60% 30%, rgba(56,189,248,.18), transparent 60%), rgba(255,255,255,.06);
+  color:#cfefff; font-size:22px; cursor:pointer; box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+#msg-fab:hover{ box-shadow: 0 10px 30px rgba(0,0,0,.45), 0 0 24px rgba(56,189,248,.35) inset; transform: translateY(-1px); }
+</style>
+
+</head>
+<body>
+  <canvas id="bg-grid"></canvas>
+<header>
+  <div class="brand">
+    <h1>Apoyo en Guatemala</h1>
+    <p>Tu beca, tu capital, tu futuro... en un solo lugar.</p>
+  </div>
+  <div class="controls">
+    <div class="search"><input id="search" placeholder="Buscar proyectos..." /></div>
+    <div id="auth-area" class="header-right"></div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-weight:700;font-size:18px">Proyectos destacados</div>
+        <div class="small">Explora, dona o participa como voluntario</div>
+      </div>
+      <div class="small">Demo POO integrado • almacenado localmente</div>
+    </div>
+  </div>
+
+  <section id="controls" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div>
+      <button id="btn-add" class="btn btn-primary">Agregar proyecto</button>
+    </div>
+    <div class="small">Roles: Estudiante, Emprendedor, Inversionista, Voluntario, Donante</div>
+  </section>
+
+  <section id="projects" class="grid"></section>
+
+  <div style="display:flex; justify-content:center; margin:28px 0;">
+    <a href="proyectos.html" class="view-all-bottom">Ver todos los proyectos</a>
+  </div>
+</main>
+
+<div id="modal-root" class="modal-root"></div>
+
+<script src="js/classes/Notificaciones.js"></script>
+  <script src="js/classes/Notificaciones.js"></script>
+  <script src="js/classes/Mensajes.js"></script>
+  <script src="js/classes/Vista.js"></script>
+<script src="js/classes/Controlador.js"></script>
+<script src="./js/main.js"></script>
+
+<script>
+(function(){
+  const c = document.getElementById('bg-grid');
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  function resize(){
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  let t = 0;
+  function draw(){
+    const w = c.width, h = c.height;
+    ctx.clearRect(0,0,w,h);
+    const spacing = 40;
+    ctx.lineWidth = 1;
+    // Glow lines
+    for(let y=0; y<h; y+=spacing){
+      ctx.strokeStyle = 'rgba(56,189,248,0.08)';
+      ctx.beginPath();
+      ctx.moveTo(0, (y + (Math.sin((t+y)*0.002)*6)));
+      ctx.lineTo(w, (y + (Math.sin((t+y)*0.002)*6)));
+      ctx.stroke();
+    }
+    for(let x=0; x<w; x+=spacing){
+      ctx.strokeStyle = 'rgba(45,212,191,0.08)';
+      ctx.beginPath();
+      ctx.moveTo((x + (Math.cos((t+x)*0.002)*6)), 0);
+      ctx.lineTo((x + (Math.cos((t+x)*0.002)*6)), h);
+      ctx.stroke();
+    }
+    // Nodes
+    for(let y=0; y<h; y+=spacing){
+      for(let x=0; x<w; x+=spacing){
+        const px = x + Math.cos((t+x)*0.002)*3;
+        const py = y + Math.sin((t+y)*0.002)*3;
+        const g = ctx.createRadialGradient(px,py,0,px,py,3);
+        g.addColorStop(0,'rgba(56,189,248,0.35)');
+        g.addColorStop(1,'rgba(56,189,248,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(px,py,3,0,Math.PI*2);
+        ctx.fill();
+      }
+    }
+    t += 16;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+<button id="notif-fab" title="Notificaciones">🔔</button>
+<script>document.getElementById("notif-fab").addEventListener("click", ()=>{ if(typeof openNotifModal==="function"){ openNotifModal(); } else { alert("Cargando... inténtalo en un momento."); } });</script>
+
+<script>
+window.openModal = function(html){
+  const root = document.getElementById('modal-root');
+  root.classList.add('show');
+  root.innerHTML = `<div class="modal"><button class="close-x" onclick="__closeModal()">×</button>${html}</div>`;
+  return { root, panel: root.firstElementChild };
+}
+window.__closeModal = function(){
+  const root = document.getElementById('modal-root');
+  root.classList.remove('show');
+  root.innerHTML = '';
+}
+</script>
+
+
+
+
+
+<script>
+(function(){
+  const fab = document.getElementById('notif-fab');
+  if(fab){
+    fab.addEventListener('click', function(){
+      if(window.openNotifModal){ window.openNotifModal(); }
+      else { alert('Preparando la ventana...'); }
+    });
+  }
+})();
+</script>
+
+
+<script>
+window.openNotifModal = function(){
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('ks_session')||'null'); } catch(e){ session = null; }
+
+  if(!session){
+    const html = `<h3>Notificaciones</h3>
+      <div style="opacity:.85">Inicia sesión para ver tus notificaciones.</div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+      </div>`;
+    openModal(html);
+    return;
+  }
+
+  let items = [];
+  try{ if(typeof Notificaciones==='function'){ items = new Notificaciones().list(session.id); } }catch(e){ items = []; }
+
+  const listHtml = items.length ? items.map(it => `
+    <div style="padding:8px; border-bottom:1px solid rgba(255,255,255,.08)">
+      <div style="font-weight:700">${it.projectTitle||'Proyecto'} • 
+        <span style="opacity:.8">${it.type||'actividad'}</span>
+      </div>
+      ${it.type==='donacion' ? `<div class="small" style="opacity:.9">Monto: Q${(it.amount||0)} • Tipo: ${it.donationType||'-'}</div>` : ''}
+      ${it.message ? `<div class="small" style="opacity:.85">Mensaje: ${it.message}</div>` : ''}
+      ${it.commentText ? `<div class="small" style="opacity:.85">Comentario: ${it.commentText}</div>` : ''}
+      ${it.helpText ? `<div class="small" style="opacity:.85">Ayuda ofrecida: ${it.helpText}</div>` : ''}
+      <div class="small" style="opacity:.7">de ${it.fromUserName||'Usuario'} • ${new Date(it.createdAt||Date.now()).toLocaleString()}</div>
+    </div>`).join('') : '<div style="opacity:.8">No tienes notificaciones.</div>';
+
+  const htmlModal = `<h3>Notificaciones</h3>
+    <div style="max-height:300px; overflow:auto; border:1px solid rgba(255,255,255,.08); border-radius:10px; margin-top:8px">${listHtml}</div>
+    <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end">
+      <button class="btn btn-ghost" id="notif-demo">Crear notificación de prueba</button>
+      <button class="btn btn-ghost" id="notif-mark">Marcar como leídas</button>
+      <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+    </div>`;
+
+  const m = openModal(htmlModal);
+  const mark = m.panel.querySelector('#notif-mark');
+  if(mark){
+    mark.onclick = () => { try{ new Notificaciones().markAllRead(session.id); }catch(e){} __closeModal(); };
+  }
+  const demo = m.panel.querySelector('#notif-demo');
+  if(demo){
+    demo.onclick = () => {
+      try{
+        const n = new Notificaciones();
+        n.add(session.id, { type:'prueba', projectId: 0, projectTitle:'Demo de notificación', fromUserId: session.id, fromUserName: session.nombre });
+        __closeModal(); setTimeout(()=>openNotifModal(), 10); // refrescar sin alerts
+      }catch(e){ /* silencioso */ }
+    };
+  }
+}
+</script>
+
+
+<!-- Botón de Mensajes (solo UI) -->
+<style>
+  
+</style>
+<button id="msg-fab" title="Mensajes">💬</button>
+
+
+
+
+
+<script>
+window.openMessagesModal = function(){
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('ks_session')||'null'); } catch(e){ session = null; }
+  if(!session){
+    const html = `<h3>Mensajes</h3>
+      <div style="opacity:.85">Inicia sesión para usar mensajes.</div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+      </div>`;
+    openModal(html); return;
+  }
+  const users = JSON.parse(localStorage.getItem('ks_users')||'[]');
+  const me = users.find(u=>String(u.id)===String(session.id)) || session;
+  const others = users.filter(u=>String(u.id)!==String(session.id));
+
+  const svc = new Mensajes();
+  let inbox = svc.listInbox(session.id);
+  let sent  = svc.listSent(session.id);
+
+  function row(m){
+    return `<div style="padding:8px;border-bottom:1px solid rgba(255,255,255,.08)">
+      <div style="font-weight:600">${m.fromName} → ${m.toName}</div>
+      <div class="small" style="opacity:.85">${(m.text||'').replace(/</g,'&lt;')}</div>
+      <div class="small" style="opacity:.7">${new Date(m.createdAt).toLocaleString()}</div>
+    </div>`;
+  }
+
+  function renderPanel(kind){
+    if(kind==='inbox'){
+      inbox = svc.listInbox(session.id);
+      return inbox.length? inbox.map(row).join('') : '<div style="opacity:.8">No tienes mensajes.</div>';
+    } else if(kind==='sent'){
+      sent = svc.listSent(session.id);
+      return sent.length? sent.map(row).join('') : '<div style="opacity:.8">No has enviado mensajes.</div>';
+    }
+    return '';
+  }
+
+  const options = others.map(u=>`<option value="${u.id}">${u.nombre} (${u.tipoUsuario||u.rol||''})</option>`).join('');
+  const html = `<h3>Mensajes</h3>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+      <button class="btn btn-ghost" id="tab-inbox">Bandeja</button>
+      <button class="btn btn-ghost" id="tab-sent">Enviados</button>
+      <button class="btn btn-ghost" id="tab-compose">Redactar</button>
+    </div>
+    <div id="msg-panel" style="margin-top:10px;border:1px solid rgba(255,255,255,.08);border-radius:10px;max-height:320px;overflow:auto;padding:8px">
+      ${renderPanel('inbox')}
+    </div>
+    <div id="compose" style="display:none;margin-top:10px;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label>Para:</label>
+        <select id="msg-to" class="btn btn-ghost" style="min-width:220px">${options}</select>
+      </div>
+      <textarea id="msg-text" rows="3" style="width:100%;margin-top:8px;background:rgba(255,255,255,.06);color:#dff3ff;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px" placeholder="Escribe tu mensaje..."></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+        <button class="btn btn-ghost" id="msg-send">Enviar</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+      <button class="btn btn-ghost" id="msg-mark">Marcar bandeja como leída</button>
+      <button class="btn btn-primary" onclick="__closeModal()">Cerrar</button>
+    </div>`;
+
+  const m = openModal(html);
+  const panel = m.panel.querySelector('#msg-panel');
+  const compose = m.panel.querySelector('#compose');
+
+  function switchTab(which){
+    if(which==='compose'){ compose.style.display='block'; panel.innerHTML=''; }
+    else { compose.style.display='none'; panel.innerHTML = renderPanel(which); }
+  }
+
+  const tabInbox = m.panel.querySelector('#tab-inbox');
+  const tabSent  = m.panel.querySelector('#tab-sent');
+  const tabCompose = m.panel.querySelector('#tab-compose');
+  if(tabInbox) tabInbox.onclick = ()=>switchTab('inbox');
+  if(tabSent)  tabSent.onclick  = ()=>switchTab('sent');
+  if(tabCompose) tabCompose.onclick = ()=>switchTab('compose');
+
+  const mark = m.panel.querySelector('#msg-mark');
+  if(mark){ mark.onclick = ()=>{ try{ svc.markAllRead(session.id);}catch(e){} __closeModal(); }; }
+
+  const sendBtn = m.panel.querySelector('#msg-send');
+  if(sendBtn){
+    sendBtn.onclick = () => {
+      try{
+        const toId = m.panel.querySelector('#msg-to')?.value;
+        const text = m.panel.querySelector('#msg-text')?.value?.trim();
+        const us = JSON.parse(localStorage.getItem('ks_users')||'[]');
+        const me2 = us.find(u=>String(u.id)===String(session.id)) || session;
+        const toUser = us.find(u=>String(u.id)===String(toId));
+        if(toUser && text){
+          svc.send(me2, toUser, text);
+          __closeModal();
+          setTimeout(()=>openMessagesModal(), 10); // refresca
+        }
+      }catch(e){}
+    };
+  }
+};
+</script>
+
+
+<script>
+(function bindMsgFab(){
+  function attach(){
+    var btn = document.getElementById('msg-fab');
+    if(btn){
+      btn.onclick = function(e){
+        e.preventDefault(); e.stopPropagation();
+        if (typeof window.openMessagesModal === 'function') {
+          window.openMessagesModal();
+        } else {
+          // fallback: simple placeholder to confirm binding works
+          openModal(`<h3>Mensajes</h3><div style='opacity:.8'>Cargando módulo…</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-primary" onclick="__closeModal()">Cerrar</button></div>`);
+        }
+      };
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attach);
+  } else {
+    attach();
+  }
+})();
+</script>
+
+<script>window.addEventListener("DOMContentLoaded",()=>{ try{ (new Controlador(new Vista())).init(); }catch(e){} });</script>
+</body>
+</html>
