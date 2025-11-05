@@ -255,7 +255,9 @@ header .auth-buttons { display:flex; gap:10px; align-items:center; }
 <script src="js/classes/Notificaciones.js"></script>
   <script src="js/classes/Notificaciones.js"></script>
   <script src="js/classes/Mensajes.js"></script>
-  <script src="./js/main.js"></script>
+  <script src="js/classes/Vista.js"></script>
+<script src="js/classes/Controlador.js"></script>
+<script src="./js/main.js"></script>
 
 <script>
 (function(){
@@ -539,5 +541,6 @@ window.openMessagesModal = function(){
 })();
 </script>
 
+<script>window.addEventListener("DOMContentLoaded",()=>{ try{ (new Controlador(new Vista())).init(); }catch(e){} });</script>
 </body>
 </html>

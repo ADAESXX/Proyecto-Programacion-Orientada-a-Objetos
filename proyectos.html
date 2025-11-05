@@ -119,6 +119,8 @@
 <!-- raíz de modales -->
 <div id="modal-root" class="modal-root"></div>
 
+<script src="js/classes/Vista.js"></script>
+<script src="js/classes/Controlador.js"></script>
 <script src="./js/main.js"></script>
 
 
@@ -225,5 +227,6 @@ window.openNotifModal = function(){
 }
 </script>
 
+<script>window.addEventListener("DOMContentLoaded",()=>{ try{ (new Controlador(new Vista())).init(); }catch(e){} });</script>
 </body>
 </html>
