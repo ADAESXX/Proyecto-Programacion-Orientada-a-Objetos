@@ -1,4 +1,3 @@
-// Usamos ayuda de la IA para convertir esta clase de java a js
 // Programador encargado: Allyson Escobar
 //Fecha de inicio: 16/10/2025
 class Inversionista extends Usuario {
