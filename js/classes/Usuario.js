@@ -1,6 +1,6 @@
-// Usamos ayuda de la IA para convertir esta clase de java a js
 // Programador encargado: Allyson Escobar
 //Fecha de inicio: 16/10/2025
+//Función: Es la clase padre que tiene todas las características (atributos) y acciones (métodos) que tienen los diferentes tipos de usuarios.
 class Usuario {
   constructor(id, nombre, correo, contrasena, tipoUsuario) {
     this.id = id;
