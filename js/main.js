@@ -224,7 +224,7 @@ function initApp(){
     if(!session) return alert('Debes iniciar sesión para donar');
     const html = `<div class="modal"><button class="close-x" onclick="__closeModal()">×</button>
       <h3>Donar a ${project.titulo}</h3>
-      <div class="form-row"><select id="d-type"><option value="money">Donación económica</option><option value="volunteer">Voluntariado</option></select></div>
+      <div class="form-row"><select id="d-type"><option value="money">Donación económica</option><option value="Voluntario">Voluntariado</option></select></div>
       <div class="form-row"><input id="d-amount" type="number" placeholder="Monto Q (si es económico)"></div>
       <div class="form-row"><textarea id="d-text" placeholder="Describe tu ayuda (si voluntariado: mano de obra, capacitación, materiales, etc.)"></textarea></div>
       <div style="margin-top:12px"><button id="d-send" class="btn btn-primary">Confirmar</button></div></div>`;
