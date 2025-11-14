@@ -260,7 +260,7 @@ try{
       fromUserId: String(session.id),
       fromUserName: session.nombre,
       amount: donationAmount,
-      donationType: donationType,
+      donationType: donationType === "volunteer" ? "voluntario": donationType,
       message: donationMessage
     });
   }catch(e){}
