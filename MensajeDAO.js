@@ -6,17 +6,19 @@ Clase               : Programación Orientada a Objetos (POO)
 Fecha               : 23/10/2025
 ------------------------------------------------------------
 */
+
 import BaseDAO from './BaseDAO.js';
 import Usuario from './models/Usuario.js';
 import Mensaje from './models/Mensaje.js';
 
 class MensajeDAO extends BaseDAO {
     
-    // Enviar mensaje
+    // Enviar un mensaje entre usuarios (crea un registro en la BD)
     async enviarMensaje(mensaje) {
         const emisorId = await this.obtenerIdUsuarioPorCorreo(mensaje.getEmisor().getCorreo());
         const receptorId = await this.obtenerIdUsuarioPorCorreo(mensaje.getReceptor().getCorreo());
         
+        // Validar que ambos usuarios existan
         if (emisorId === -1 || receptorId === -1) {
             console.error('No se encontraron los usuarios emisor o receptor');
             return false;
@@ -27,7 +29,7 @@ class MensajeDAO extends BaseDAO {
         return await this.executeUpdate(sql, emisorId, receptorId, mensaje.getContenido());
     }
     
-    // Obtener mensajes entre dos usuarios
+    // Obtener todos los mensajes entre dos usuarios (conversación)
     async obtenerMensajesEntreUsuarios(correoUsuario1, correoUsuario2) {
         const mensajes = [];
         const sql = `SELECT m.contenido, m.fecha_envio,
@@ -41,6 +43,7 @@ class MensajeDAO extends BaseDAO {
                      WHERE (e.correo = ? AND r.correo = ?) OR (e.correo = ? AND r.correo = ?)
                      ORDER BY m.fecha_envio ASC`;
         
+        // Ejecutar consulta y reconstruir mensajes
         const rows = await this.executeQuery(sql, correoUsuario1, correoUsuario2, correoUsuario2, correoUsuario1);
         
         for (const row of rows) {
@@ -66,7 +69,7 @@ class MensajeDAO extends BaseDAO {
         return mensajes;
     }
     
-    // Obtener mensajes recibidos por un usuario
+    // Obtener todos los mensajes recibidos por un usuario específico
     async obtenerMensajesRecibidos(correoReceptor) {
         const mensajes = [];
         const sql = `SELECT m.contenido, m.fecha_envio,
@@ -82,6 +85,7 @@ class MensajeDAO extends BaseDAO {
         
         const rows = await this.executeQuery(sql, correoReceptor);
         
+        // Crear objetos Mensaje a partir de los resultados
         for (const row of rows) {
             const emisor = new Usuario(
                 row.emisor_nombre,
@@ -105,7 +109,7 @@ class MensajeDAO extends BaseDAO {
         return mensajes;
     }
     
-    // Obtener mensajes enviados por un usuario
+    // Obtener todos los mensajes enviados por un usuario
     async obtenerMensajesEnviados(correoEmisor) {
         const mensajes = [];
         const sql = `SELECT m.contenido, m.fecha_envio,
@@ -144,7 +148,7 @@ class MensajeDAO extends BaseDAO {
         return mensajes;
     }
     
-    // Método auxiliar
+    // Método auxiliar: obtener ID del usuario mediante su correo
     async obtenerIdUsuarioPorCorreo(correo) {
         const sql = `SELECT id FROM usuarios WHERE correo = ?`;
         const row = await this.executeQuerySingle(sql, correo);
@@ -152,7 +156,7 @@ class MensajeDAO extends BaseDAO {
         return row ? row.id : -1;
     }
     
-    // Eliminar mensajes entre usuarios
+    // Eliminar todos los mensajes entre dos usuarios
     async eliminarMensajesEntreUsuarios(correoUsuario1, correoUsuario2) {
         const sql = `DELETE m FROM mensajes m
                      JOIN usuarios e ON m.emisor_id = e.id
@@ -164,3 +168,4 @@ class MensajeDAO extends BaseDAO {
 }
 
 export default MensajeDAO;
+
